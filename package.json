@@ -1,0 +1,21 @@
+{
+  "name": "watchwebapp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danielohuruogu/watchwepapp.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/danielohuruogu/watchwepapp/issues"
+  },
+  "homepage": "https://github.com/danielohuruogu/watchwepapp#readme"
+}
