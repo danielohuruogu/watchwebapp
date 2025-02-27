@@ -17,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/danielohuruogu/watchwepapp/issues"
   },
-  "homepage": "https://github.com/danielohuruogu/watchwepapp#readme"
+  "homepage": "https://github.com/danielohuruogu/watchwepapp#readme",
+  "dependencies": {
+    "watchwebapp": "file:"
+  }
 }
