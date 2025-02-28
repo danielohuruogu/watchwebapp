@@ -1,11 +1,15 @@
 
 import Three from './three'
+import SomeRhino from './rhino'
 import './App.css'
 
 function App() {
 
   return (
-    < Three />
+    <div>
+      < Three />
+      < SomeRhino />
+    </div>
   )
 }
 
