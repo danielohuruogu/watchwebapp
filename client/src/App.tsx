@@ -1,6 +1,6 @@
 
 import Three from './three/three'
-import SomeRhino from './rhino/rhino'
+// import SomeRhino from './rhino/rhino'
 import './App.css'
 
 function App() {
@@ -8,7 +8,7 @@ function App() {
   return (
     <div>
       < Three />
-      < SomeRhino />
+      {/* < SomeRhino /> */}
     </div>
   //   <div className="card">
   //   <button onClick={() => setCount((count) => count + 1)}>

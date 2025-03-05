@@ -1,4 +1,4 @@
-import rhino3dm, { Sphere } from "rhino3dm"
+import rhino3dm, { Sphere } from 'rhino3dm'
 
 const getRhinoObject = async (): Promise<Sphere> => {
     return rhino3dm().then((module) => {
