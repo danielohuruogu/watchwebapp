@@ -1,10 +1,7 @@
-import rhino3dm, { Sphere } from 'rhino3dm'
+import rhino3dm from 'rhino3dm'
 
-const getRhinoObject = async (): Promise<Sphere> => {
-    return rhino3dm().then((module) => {
-        const shape = new module.Sphere([0, 0, 0], 12)
-        return shape
-    })
+const loadRhinoObject = async (): Promise<unknown> => {
+    // load a file and get the objects out of a file
 }
 
-export default getRhinoObject
+export default loadRhinoObject

@@ -3,18 +3,18 @@ import * as THREE from 'three'
 
 import { useEffect, useRef } from 'react'
 import getRhinoObject from '../rhino/rhinoObject'
-import { Mesh, Sphere, File3dm } from 'rhino3dm'
+import { Mesh, Sphere } from 'rhino3dm'
 
 
-function MyThree() {
+// the scene will be loaded in this file
+// all the loaders will be called here. conversion for Three will also happen elsewhere
+
+function Three() {
   const refContainer = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    getRhinoObject().then((shape: Sphere) => {
+    getRhinoObject().then((shape: unknown) => {
       if (shape) {
-        console.log('shape exists')
-        console.log({shape})
-        console.log(shape.diameter)
         // rhino object is now available, but needs to be converted into a Three.js object
         const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 })
 
@@ -57,4 +57,4 @@ function MyThree() {
   )
 }
 
-export default MyThree
+export default Three
