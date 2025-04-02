@@ -1,16 +1,24 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as Three from 'three'
+import { Rhino3dmLoader } from 'three/examples/jsm/loaders/3DMLoader.js'
 
+interface GeometryObject extends Three.Object3D {
+  geometry: Three.BufferGeometry
+}
 
 function RhinoToThree () {
   const ref = useRef<HTMLDivElement>(null)
   const sceneRef = useRef<Three.Scene>(null)
   const cameraRef = useRef<Three.PerspectiveCamera>(null)
   const geometryRef = useRef<Three.Mesh>(null)
+  // const loadedGeometryRef = useRef<Three.Mesh>(null)
   const orbitControlsRef = useRef<OrbitControls>(null)
   const rendererRef = useRef<Three.WebGLRenderer>(null)
   const loadFileCalled = useRef(false)
+
+  const cameraOrthographicRef = useRef<Three.OrthographicCamera>(null)
+  const frustrumSize = 600
 
   const initScene = useCallback(() => {
     if (!ref.current) {
@@ -34,7 +42,12 @@ function RhinoToThree () {
 
     const camera = new Three.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
     cameraRef.current = camera
-    scene.add(camera)
+
+    // for othographic camera
+    const cameraOrtho = new Three.OrthographicCamera(0.5*frustrumSize / -2, 0.5*frustrumSize / 2, frustrumSize / 2, frustrumSize / -2, 0.1, 1000)
+    cameraOrthographicRef.current = cameraOrtho
+
+    scene.add(cameraOrtho)
 
     const renderer = new Three.WebGLRenderer()
     renderer.setSize(800, 800)
@@ -43,24 +56,65 @@ function RhinoToThree () {
     ref.current?.appendChild(renderer.domElement)
 
     // orbit controls
-    const orbitControls = new OrbitControls(camera, renderer.domElement)
+    const orbitControls = new OrbitControls(cameraOrtho, renderer.domElement)
     orbitControlsRef.current = orbitControls
 
-    camera.position.z = 5
+    cameraOrtho.position.z = 2
 
     console.log('finished initialising the scene')
   }, [])
 
   const loadFile = useCallback(() => {
-    if (!sceneRef.current || !cameraRef.current || !orbitControlsRef.current) return
+    if (!sceneRef.current || !cameraOrthographicRef.current || !orbitControlsRef.current) return
     if (loadFileCalled.current) {
       console.log('loadFile already called')
       return
     }
 
-    // const modelPath = '/assets/circle_test.3dm'
-    // const loader = new Rhino3dmLoader()
-    // loader.setLibraryPath('https://unpkg.com/rhino3dm@8.4.0/')
+    const modelPath = '/assets/complete_digital.3dm'
+    const loader = new Rhino3dmLoader()
+    loader.setLibraryPath('https://unpkg.com/rhino3dm@8.4.0/')
+
+    loader.load(
+      modelPath,
+      (object: Three.Object3D) => {
+          object.traverse((child) => {
+            console.log({child})
+            if (child instanceof Three.Mesh) {
+              console.log('child is a mesh')
+              child.material = new Three.MeshStandardMaterial({
+                color: 0x00ff00,
+                side: Three.DoubleSide,
+              })
+              child.scale.set(0.1, 0.1, 0.1)
+            } else {
+              // convert geometry to mesh
+              if ((child as GeometryObject).geometry instanceof Three.BufferGeometry) {
+                console.log('child is a buffer geometry')
+                const mesh = new Three.Mesh((child as GeometryObject).geometry, new Three.MeshStandardMaterial({
+                  color: 0x00ff00,
+                  side: Three.DoubleSide,
+                  flatShading: true,
+                }))
+                mesh.scale.set(0.1, 0.1, 0.1)
+                child = mesh
+              } else {
+                console.log('child is not a mesh or buffer geometry: ', child)
+              }
+            }
+          }
+        )
+        object.rotateX(-Math.PI / 2)
+        sceneRef.current?.add(object)
+        console.log('loaded object: ', object)
+      },
+      (xhr: ProgressEvent) => {
+        console.log((xhr.loaded / xhr.total * 100) + '% loaded')
+      },
+      (error: unknown) => {
+        console.error('An error happened: ', error)
+      }
+    )
 
     const geometry = new Three.BoxGeometry()
     const material = new Three.MeshBasicMaterial({ color: 0x00ff00 })
@@ -75,18 +129,17 @@ function RhinoToThree () {
   }, [])
 
   const animate = useCallback(() => {
-    if (!sceneRef.current || !cameraRef.current || !rendererRef.current || !orbitControlsRef.current) return
+    if (!sceneRef.current || !cameraOrthographicRef.current || !rendererRef.current || !orbitControlsRef.current) return
     
     const animationId = requestAnimationFrame(animate)
     
     if (geometryRef.current) {
       geometryRef.current.rotation.x += 0.01
       geometryRef.current.rotation.y += 0.01
-      // console.log('cube rotation: ', geometryRef.current.rotation)
     }
 
     orbitControlsRef.current.update()
-    rendererRef.current.render(sceneRef.current, cameraRef.current)
+    rendererRef.current.render(sceneRef.current, cameraOrthographicRef.current)
 
     return animationId
   }, [])
@@ -98,9 +151,9 @@ function RhinoToThree () {
     const animationId = animate()
 
     const handleResize = () => {
-      if (cameraRef.current && rendererRef.current) {
-        cameraRef.current.aspect = window.innerWidth / window.innerHeight;
-        cameraRef.current.updateProjectionMatrix();
+      if (cameraOrthographicRef.current && rendererRef.current) {
+        // cameraOrthographicRef.current.aspect = window.innerWidth / window.innerHeight;
+        cameraOrthographicRef.current.updateProjectionMatrix();
         rendererRef.current.setSize(window.innerWidth, window.innerHeight);
       }
     }
