@@ -1,13 +1,13 @@
-// import Three from './three/three'
 import './App.css'
-import RhinoToThree from './rhino/rhinoObject'
+import Start from './start/rhinoObject'
+import Header from './ui/header'
 
 function App() {
 
   return (
     <div>
-      {/* < Three /> */}
-      < RhinoToThree />
+      < Header />
+      < Start />
     </div>
   )
 }
