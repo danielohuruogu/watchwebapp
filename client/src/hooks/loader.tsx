@@ -9,7 +9,7 @@ interface GeometryObject extends Three.Object3D {
 
 export function useLoader() {
 
-  const { sceneRef, cameraRef, orbitControlsRef, geometryRef, loadFileCalled } = useThree()
+  const { sceneRef, cameraRef, orbitControlsRef, geometryRef, modelsRef, loadFileCalled } = useThree()
 
   const loadFile = useCallback(() => {
     if (!sceneRef.current || !cameraRef.current || !orbitControlsRef.current) return
@@ -22,23 +22,23 @@ export function useLoader() {
     loader.setLibraryPath('https://unpkg.com/rhino3dm@8.4.0/')
 
     const modelPaths = [
-      '/assets/housing_button.3dm',
-      '/assets/housing_standard.3dm',
+      // '/assets/housing_button.3dm',
+      // '/assets/housing_standard.3dm',
       '/assets/complete_digital.3dm',
       '/assets/complete_analogue_face-1.3dm'
     ]
 
-    const models = []
+    const models: Three.Object3D[] = []
 
     for (let i = 0; i < modelPaths.length; i++) {
-      console.log('loading model: ', modelPaths[i])
+      // console.log('loading model: ', modelPaths[i])
       loader.load(
         modelPaths[i],
         (object: Three.Object3D) => {
             object.traverse((child) => {
-              console.log({child})
+              // console.log({child})
               if (child instanceof Three.Mesh) {
-                console.log('child is a mesh')
+                // console.log('child is a mesh')
                 child.material = new Three.MeshStandardMaterial({
                   color: 0x00ff00,
                   side: Three.DoubleSide,
@@ -47,7 +47,7 @@ export function useLoader() {
               } else {
                 // convert geometry to mesh
                 if ((child as GeometryObject).geometry instanceof Three.BufferGeometry) {
-                  console.log('child is a buffer geometry')
+                  // console.log('child is a buffer geometry')
                   const mesh = new Three.Mesh((child as GeometryObject).geometry, new Three.MeshStandardMaterial({
                     color: 0x00ff00,
                     side: Three.DoubleSide,
@@ -62,19 +62,23 @@ export function useLoader() {
             }
           )
           object.rotateX(-Math.PI / 2)
-          object.position.x += i*5
+          // object.position.x += i*5
           models.push(object)
-          sceneRef.current?.add(object)
+          // sceneRef.current?.add(object)
+
           console.log('loaded object: ', object)
         },
-        (xhr: ProgressEvent) => {
-          console.log((xhr.loaded / xhr.total * 100) + '% loaded')
-        },
+        (undefined),
+        // (xhr: ProgressEvent) => {
+        //   // console.log((xhr.loaded / xhr.total * 100) + '% loaded')
+        // },
         (error: unknown) => {
           console.error('An error happened: ', error)
         }
       )
     }
+
+    modelsRef.current = models
 
     const geometry = new Three.BoxGeometry()
     const material = new Three.MeshBasicMaterial({ color: 0x00ff00 })

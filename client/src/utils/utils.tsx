@@ -8,6 +8,7 @@ export const ThreeContext = createContext<{
   cameraRef: React.RefObject<Three.PerspectiveCamera | null>
   rendererRef: React.RefObject<Three.WebGLRenderer | null>
   geometryRef: React.RefObject<Three.Mesh | null>
+  modelsRef: React.RefObject<Array<Three.Object3D> | null>
   orbitControlsRef: React.RefObject<OrbitControls | null>
   loadFileCalled: React.RefObject<boolean>
 } | null>(null)
@@ -17,11 +18,12 @@ export const ThreeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const cameraRef = useRef<Three.PerspectiveCamera | null>(null)
   const rendererRef = useRef<Three.WebGLRenderer | null>(null)
   const geometryRef = useRef<Three.Mesh | null>(null)
+  const modelsRef = useRef<Array<Three.Object3D> | null>(null)
   const orbitControlsRef = useRef<OrbitControls | null>(null)
   const loadFileCalled = useRef<boolean>(false)
 
   return (
-    <ThreeContext.Provider value={{ sceneRef, cameraRef, rendererRef, geometryRef, orbitControlsRef, loadFileCalled }}>
+    <ThreeContext.Provider value={{ sceneRef, cameraRef, rendererRef, modelsRef,geometryRef, orbitControlsRef, loadFileCalled }}>
       {children}
     </ThreeContext.Provider>
   )

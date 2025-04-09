@@ -1,5 +1,5 @@
 import './App.css'
-import Start from './start/rhinoObject'
+import Start from './start/start'
 import Header from './ui/header'
 
 function App() {
