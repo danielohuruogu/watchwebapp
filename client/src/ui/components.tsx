@@ -5,8 +5,8 @@ import * as Three from 'three'
 export const Button = () => {
   const { geometryRef, sceneRef, modelsRef } = useThree()
 
-  const modelOneRef = useRef<Three.Object3D | null>(null);
-  const modelTwoRef = useRef<Three.Object3D | null>(null);
+  const modelOneRef = useRef<Three.Object3D | null>(null)
+  const modelTwoRef = useRef<Three.Object3D | null>(null)
   
   const loadModels = useCallback(() => {
     if (!modelsRef.current || modelsRef.current.length === 0) {
