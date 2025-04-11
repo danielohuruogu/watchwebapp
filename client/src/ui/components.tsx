@@ -22,14 +22,14 @@ export const Button = () => {
     sceneRef.current?.add(modelTwoRef.current)
   }, [])
 
-  const toggleVisibility = () => {
+  const toggleVisibility = useCallback(() => {
     if (!modelOneRef.current || !modelTwoRef.current) {
       console.error('Models not in the refs')
       return
     }
     modelOneRef.current.visible = !modelOneRef.current.visible
     modelTwoRef.current.visible = !modelTwoRef?.current.visible
-  }
+  }, [])
 
   useEffect(() => {
     // have to wait for the contexts to get mounted

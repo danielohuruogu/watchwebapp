@@ -1,8 +1,8 @@
 import { useContext } from 'react'
-import { ThreeContext } from '../utils/utils'
+import { AppContext } from '../utils/utils'
 
 export const useThree = () => {
-  const context = useContext(ThreeContext)
+  const context = useContext(AppContext)
   if (!context) {
     throw new Error('useThree must be used within a ThreeProvider')
   }
