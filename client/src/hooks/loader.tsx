@@ -36,11 +36,11 @@ export function useLoader() {
         modelPaths[i],
         (object: Three.Object3D) => {
             object.traverse((child) => {
-              // console.log({child})
+              console.log({child})
+              if (child.name === '' || child.name === undefined || child.name === null) console.log('child name is empty')
               if (child instanceof Three.Mesh) {
-                // console.log('child is a mesh')
                 child.material = new Three.MeshStandardMaterial({
-                  color: 0x00ff00,
+                  color: 0x00ffad,
                   side: Three.DoubleSide,
                 })
                 child.scale.set(0.1, 0.1, 0.1)
@@ -49,7 +49,7 @@ export function useLoader() {
                 if ((child as GeometryObject).geometry instanceof Three.BufferGeometry) {
                   // console.log('child is a buffer geometry')
                   const mesh = new Three.Mesh((child as GeometryObject).geometry, new Three.MeshStandardMaterial({
-                    color: 0x00ff00,
+                    color: 0x00ff12,
                     side: Three.DoubleSide,
                     flatShading: true,
                   }))
@@ -62,9 +62,9 @@ export function useLoader() {
             }
           )
           object.rotateX(-Math.PI / 2)
-          // object.position.x += i*5
+          object.position.x += i*5
           models.push(object)
-          // sceneRef.current?.add(object)
+          sceneRef.current?.add(object)
 
           console.log('loaded object: ', object)
         },
@@ -81,7 +81,7 @@ export function useLoader() {
     modelsRef.current = models
 
     const geometry = new Three.BoxGeometry()
-    const material = new Three.MeshBasicMaterial({ color: 0x00ff00 })
+    const material = new Three.MeshBasicMaterial({ color: 0x00ffff })
     const cube = new Three.Mesh(geometry, material)
 
     geometryRef.current = cube as Three.Mesh

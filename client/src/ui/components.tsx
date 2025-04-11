@@ -24,7 +24,7 @@ export const Button = () => {
 
   const toggleVisibility = () => {
     if (!modelOneRef.current || !modelTwoRef.current) {
-      console.error('Models not loaded yet')
+      console.error('Models not in the refs')
       return
     }
     modelOneRef.current.visible = !modelOneRef.current.visible
