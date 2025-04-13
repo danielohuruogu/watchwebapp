@@ -22,10 +22,17 @@ export function useLoader() {
     loader.setLibraryPath('https://unpkg.com/rhino3dm@8.4.0/')
 
     const modelPaths = [
-      // '/assets/housing_button.3dm',
-      // '/assets/housing_standard.3dm',
-      '/assets/complete_digital.3dm',
-      '/assets/complete_analogue_face-1.3dm'
+      '/assets/housing_button.3dm',
+      '/assets/housing_standard.3dm',
+      '/assets/casing_button.3dm',
+      '/assets/casing_standard.3dm',
+      '/assets/face_analogue_1.3dm',
+      '/assets/face_digital.3dm',
+      '/assets/face_analogue_2.3dm',
+      '/assets/strap_cotton.3dm',
+      '/assets/strap_rubber.3dm',
+      // '/assets/complete_digital.3dm',
+      // '/assets/complete_analogue_face-1.3dm'
     ]
 
     const models: Three.Object3D[] = []
