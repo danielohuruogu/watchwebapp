@@ -22,14 +22,14 @@ export function useLoader() {
     loader.setLibraryPath('https://unpkg.com/rhino3dm@8.4.0/')
 
     const modelPaths = [
-      '/assets/housing_button.3dm',
-      '/assets/housing_standard.3dm',
-      '/assets/casing_button.3dm',
-      '/assets/casing_standard.3dm',
-      '/assets/face_analogue_1.3dm',
-      '/assets/face_digital.3dm',
-      '/assets/face_analogue_2.3dm',
-      '/assets/strap_cotton.3dm',
+      // '/assets/housing_button.3dm',
+      // '/assets/housing_standard.3dm',
+      // '/assets/casing_button.3dm',
+      // '/assets/casing_standard.3dm',
+      // '/assets/face_analogue_1.3dm',
+      // '/assets/face_digital.3dm',
+      // '/assets/face_analogue_2.3dm',
+      // '/assets/strap_cotton.3dm',
       '/assets/strap_rubber.3dm',
       // '/assets/complete_digital.3dm',
       // '/assets/complete_analogue_face-1.3dm'
@@ -44,30 +44,35 @@ export function useLoader() {
         (object: Three.Object3D) => {
             object.traverse((child) => {
               console.log({child})
-              if (child.name === '' || child.name === undefined || child.name === null) console.log('child name is empty')
-              if (child instanceof Three.Mesh) {
-                child.material = new Three.MeshStandardMaterial({
-                  color: 0x00ffad,
+              if (child.type && (child.type === 'Points' || child.type === 'Line')) {
+                console.log('child is a point or line - not showing')
+                child.parent?.remove(child)
+                console.log('after removing child: ', child.parent)
+                return
+              }
+              // if (skip) return
+              // if (child instanceof Three.Mesh) {
+              //   child.material = new Three.MeshStandardMaterial({
+              //     color: 0xff0000, // a shade of burgundy
+              //     side: Three.DoubleSide,
+              //   })
+              // }
+              // convert geometry to mesh
+              if ((child as GeometryObject).geometry instanceof Three.BufferGeometry) {
+                console.log('child is a buffer geometry')
+                const mesh = new Three.Mesh((child as GeometryObject).geometry, new Three.MeshStandardMaterial({
+                  color: 0x0000ff, // some shade of blue
                   side: Three.DoubleSide,
-                })
-                child.scale.set(0.1, 0.1, 0.1)
-              } else {
-                // convert geometry to mesh
-                if ((child as GeometryObject).geometry instanceof Three.BufferGeometry) {
-                  // console.log('child is a buffer geometry')
-                  const mesh = new Three.Mesh((child as GeometryObject).geometry, new Three.MeshStandardMaterial({
-                    color: 0x00ff12,
-                    side: Three.DoubleSide,
-                    flatShading: true,
-                  }))
-                  mesh.scale.set(0.1, 0.1, 0.1)
-                  child = mesh
-                } else {
-                  console.log('child is not a mesh or buffer geometry: ', child)
-                }
+                  flatShading: true,
+                }))
+                // console.log('mesh: ', mesh)
+                child = mesh
+                // console.log('child is now a mesh: ', child)
               }
             }
           )
+          object.scale.set(0.1, 0.1, 0.1)
+
           object.rotateX(-Math.PI / 2)
           object.position.x += i*5
           models.push(object)
