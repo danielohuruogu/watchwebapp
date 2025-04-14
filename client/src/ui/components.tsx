@@ -3,7 +3,7 @@ import { useThree } from '../hooks/three'
 import * as Three from 'three'
 
 export const Button = () => {
-  const { geometryRef, sceneRef, modelsRef } = useThree()
+  const { geometryRef, sceneRef, modelOptionsRef } = useThree()
 
   const modelOneRef = useRef<Three.Object3D | null>(null)
   const modelTwoRef = useRef<Three.Object3D | null>(null)
