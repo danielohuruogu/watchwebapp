@@ -9,12 +9,12 @@ interface GeometryObject extends Three.Object3D {
 
 export function useLoader() {
 
-  const { sceneRef, cameraRef, orbitControlsRef, geometryRef, modelsRef, loadFileCalled } = useThree()
+  const { sceneRef, cameraRef, orbitControlsRef, geometryRef, modelOptionsRef, loadedFiles } = useThree()
 
   const loadFile = useCallback(() => {
     if (!sceneRef.current || !cameraRef.current || !orbitControlsRef.current) return
-    if (loadFileCalled.current) {
-      console.log('loadFile already called')
+    if (loadedFiles.current) {
+      console.log('files are already there')
       return
     }
 
@@ -50,13 +50,15 @@ export function useLoader() {
                 console.log('after removing child: ', child.parent)
                 return
               }
-              // if (skip) return
-              // if (child instanceof Three.Mesh) {
-              //   child.material = new Three.MeshStandardMaterial({
-              //     color: 0xff0000, // a shade of burgundy
-              //     side: Three.DoubleSide,
-              //   })
-              // }
+              if (child instanceof Three.Mesh) {
+                // if the child.name contains 'strap' or 'buckle',
+              }
+                if(child.name === 'face') {
+                child.material = new Three.MeshStandardMaterial({
+                  color: 0xff0000, // a shade of burgundy
+                  side: Three.DoubleSide,
+                })
+              }
               // convert geometry to mesh
               if ((child as GeometryObject).geometry instanceof Three.BufferGeometry) {
                 console.log('child is a buffer geometry')
@@ -90,7 +92,7 @@ export function useLoader() {
       )
     }
 
-    modelsRef.current = models
+    modelOptionsRef.current = models
 
     const geometry = new Three.BoxGeometry()
     const material = new Three.MeshBasicMaterial({ color: 0x00ffff })
@@ -100,9 +102,9 @@ export function useLoader() {
     console.log('geometryRef.current is now: ', geometryRef.current)
     sceneRef.current?.add(cube)
 
-    loadFileCalled.current = true
-    console.log('loadFileCalled is now: ', loadFileCalled.current)
+    loadedFiles.current = true
+    console.log('loadFileCalled is now: ', loadedFiles.current)
   }, [])
 
-return { loadFile, sceneRef, cameraRef, orbitControlsRef, geometryRef, loadFileCalled }
+return { loadFile, sceneRef, cameraRef, orbitControlsRef, geometryRef, loadedFiles }
 }
