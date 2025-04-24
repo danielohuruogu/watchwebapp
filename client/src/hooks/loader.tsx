@@ -2,7 +2,6 @@ import * as Three from 'three'
 import { Rhino3dmLoader } from 'three/examples/jsm/loaders/3DMLoader.js'
 import { useThree } from './three'
 import { useCallback } from 'react'
-import { modelOptions } from '../types/global'
 // import materials from './materials'
 
 // interface GeometryObject extends Three.Object3D {

@@ -1,7 +1,6 @@
 import React, {createContext, useCallback, useRef} from 'react'
 import * as Three from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import { modelOptions, partOptions } from '../types/global'
 
 export const AppContext = createContext<{
   sceneRef: React.RefObject<Three.Scene | null>

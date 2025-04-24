@@ -7,12 +7,17 @@
   "composite": true,
   "compilerOptions": {
     "composite": true,
+    "strictNullChecks": true,
     "noEmit": false,
     "baseUrl": "./",
     "paths": {
-      "@types/*": ["types/*"]
+      "@types/*": ["types/*"],
+      "@hooks/*": ["./src/hooks/*"],
+      "@utils/*": ["./src/utils/*"],
+      "@ui/*": ["./src/ui/*"],
     },
-    "typeRoots": ["node_modules/@types", "./types"],
+    "typeRoots": ["node_modules/@types", "./src/types"],
+    "include": ["src/**/*"]
   },
   "include": ["src", "types"]
 }

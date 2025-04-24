@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { useThree } from '../hooks/three'
+import { useThree } from './three'
 
 export function useAnimate() {
   const { sceneRef, cameraRef, rendererRef, orbitControlsRef, geometryRef } = useThree()

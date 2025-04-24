@@ -1,6 +1,6 @@
 import * as Three from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import { useThree } from '../hooks/three'
+import { useThree } from './three'
 import { useCallback } from 'react'
 
 

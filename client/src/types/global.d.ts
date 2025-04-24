@@ -1,9 +1,9 @@
-export interface partGroups {
+interface partGroups {
   [key: string]: Three.Object3D[]
 }
-export interface partOptions {
+interface partOptions {
   [key: string]: partGroups
 }
-export interface modelOptions {
+interface modelOptions {
   [key:string ]: partOptions
 }
