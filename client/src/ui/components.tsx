@@ -9,17 +9,17 @@ export const Button = () => {
   const modelTwoRef = useRef<Three.Object3D | null>(null)
   
   const loadModels = useCallback(() => {
-    if (!modelsRef.current || modelsRef.current.length === 0) {
+    if (!modelOptionsRef.current) {
       console.error('modelsRef.current is not initialized or empty')
       return
     }
 
-    modelOneRef.current = modelsRef.current[0]
-    modelTwoRef.current = modelsRef.current[1]
-    modelTwoRef.current.visible = false
+    // modelOneRef.current = modelOptionsRef.current[0]
+    // modelTwoRef.current = modelOptionsRef.current[1]
+    // modelTwoRef.current.visible = false
 
-    sceneRef.current?.add(modelOneRef.current)
-    sceneRef.current?.add(modelTwoRef.current)
+    // sceneRef.current?.add(modelOneRef.current)
+    // sceneRef.current?.add(modelTwoRef.current)
   }, [])
 
   const toggleVisibility = useCallback(() => {
@@ -38,13 +38,13 @@ export const Button = () => {
     } else {
       console.log('geometryRef.current is not yet mounted')
     }
-    if (!modelsRef.current) {
+    if (!modelOptionsRef.current) {
       console.log('modelsRef.current is not yet mounted')
     } else {
-      console.log('modelsRef.current is now: ', modelsRef.current)
+      console.log('modelsRef.current is now: ', modelOptionsRef.current)
       loadModels()
     }
-  }, [geometryRef, sceneRef, modelsRef, loadModels])
+  }, [geometryRef, sceneRef, modelOptionsRef, loadModels])
 
   return (
     <button

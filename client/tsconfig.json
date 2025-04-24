@@ -3,5 +3,16 @@
   "references": [
     { "path": "./tsconfig.app.json" },
     { "path": "./tsconfig.node.json" }
-  ]
+  ],
+  "composite": true,
+  "compilerOptions": {
+    "composite": true,
+    "noEmit": false,
+    "baseUrl": "./",
+    "paths": {
+      "@types/*": ["types/*"]
+    },
+    "typeRoots": ["node_modules/@types", "./types"],
+  },
+  "include": ["src", "types"]
 }
