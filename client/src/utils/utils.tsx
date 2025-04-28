@@ -77,22 +77,39 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
 
     // need to properly load in the models here
+    console.log('the current sceneRef is: ' ,sceneRef.current)
     if (defaultModelRef.current) {
-      Object.values(defaultModelRef.current).forEach((optionVersion: partOptions) => {
-        console.log('optionVersion: ', optionVersion)
-        Object.values(optionVersion).forEach((option) => {
-          console.log('option: ', option)
-          if (option instanceof Three.Object3D) {
-            console.log('adding option to scene ')
-            sceneRef.current?.add(option)
-          } else {
-            console.log('checking what is going on')
-          }
+      console.log('defaultModelRef.current: ', defaultModelRef.current)
+      // go through the current and add them to the scene
+      Object.keys(defaultModelRef.current).forEach((part) => { // example would be strap
+        console.log('part: ', part)
+        Object.keys(defaultModelRef.current![part]).forEach((type) => { // example would be cotton
+          console.log('type: ', type)
+          Object.keys(defaultModelRef.current![part][type]).forEach((modelBitGroupName) => { // example would be buckle
+            console.log('modelBitGroupName: ', modelBitGroupName)
+            // the value should be an array of Three.Object3D objects. add these to the scene
+            const modelBitGroup = defaultModelRef.current![part][type][modelBitGroupName]
+            console.log('modelBitGroup: ', modelBitGroup)
+            if (!modelBitGroup) {
+              console.error(`Model group ${modelBitGroupName} not found`)
+              return
+            }
+            try {
+              modelBitGroup.forEach((modelBit) => {
+                console.log('modelBit: ', modelBit)
+                console.log('adding bit to scene')
+                sceneRef.current?.add(modelBit)
+              })
+            } catch (error) {
+              console.error('Error adding model bit group to scene: ', error)
+            }
+          })
         })
       })
+      console.log('models added to scene')
+      console.log(sceneRef.current?.children)
     }
-    
-  }, [modelOptionsRef, defaultModelRef])
+  }, [modelOptionsRef, sceneRef, defaultModelRef])
 
   // const toggleVisibility = useCallback(() => {
   //   if (!modelOneRef.current || !modelTwoRef.current) {
