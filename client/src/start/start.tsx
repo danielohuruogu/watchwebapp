@@ -7,7 +7,7 @@ import { useAnimate } from '../hooks/animate'
 function Start () {
   const ref = useRef<HTMLDivElement>(null)
 
-  const { rendererRef, cameraRef, modelOptionsRef, loadedFiles, setLoadedFiles, loadModelsIntoScene } = useThree()
+  const { sceneRef, rendererRef, cameraRef, modelOptionsRef, loadedFiles, setLoadedFiles, loadModelsIntoScene } = useThree()
   const { initScene } = useInitScene(ref)
   const { loadFile } = useLoader()
   const { animate } = useAnimate()
@@ -29,10 +29,6 @@ function Start () {
         })
     }
 
-    if(loadedFiles) {
-      console.log('files are already loaded - load models into scene')
-      loadModelsIntoScene()
-    }
     const animationId = animate()
 
     const handleResize = () => {
@@ -59,8 +55,14 @@ function Start () {
       }
       window.removeEventListener('resize', handleResize)
     }
-  }, [initScene, loadFile, animate, rendererRef, cameraRef, modelOptionsRef, loadedFiles, setLoadedFiles, loadModelsIntoScene])
+  }, [initScene, loadFile, animate, sceneRef, rendererRef, cameraRef, modelOptionsRef, loadedFiles, setLoadedFiles])
 
+  useEffect(() => {
+    if(loadedFiles) {
+      console.log('files are already loaded - load models into scene')
+      loadModelsIntoScene()
+    }
+  }, [loadedFiles, loadModelsIntoScene])
   return <div ref={ref} />
 }
 
