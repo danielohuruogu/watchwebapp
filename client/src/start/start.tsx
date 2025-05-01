@@ -18,16 +18,6 @@ function Start () {
     console.log('initScene called')
     // Check if the modelOptionsRef is set and loadedFiles is not set before loading the file
     // console.log('modelOptionsRef.current: ', modelOptionsRef.current)
-    console.log('loadedFiles: ', loadedFiles)
-    if (!loadedFiles) {
-      // files ain't loaded yet - load them
-      console.log('loading files')
-      loadFile()
-        .then(() => {
-          console.log('files loaded')
-          setLoadedFiles(true)
-        })
-    }
 
     const animationId = animate()
 
@@ -55,14 +45,27 @@ function Start () {
       }
       window.removeEventListener('resize', handleResize)
     }
-  }, [initScene, loadFile, animate, sceneRef, rendererRef, cameraRef, modelOptionsRef, loadedFiles, setLoadedFiles])
+  }, [initScene, animate, sceneRef, rendererRef, cameraRef, modelOptionsRef])
 
   useEffect(() => {
-    if(loadedFiles) {
+    console.log('loadedFiles: ', loadedFiles)
+    if (!loadedFiles) {
+      // files ain't loaded yet - load them
+      console.log('loading files')
+      loadFile()
+        .then(() => {
+          console.log('files loaded')
+          setLoadedFiles(true)
+        })
+    }
+  }, [loadedFiles])
+
+  useEffect(() => {
+    if (loadedFiles) {
       console.log('files are already loaded - load models into scene')
       loadModelsIntoScene()
     }
-  }, [loadedFiles, loadModelsIntoScene])
+  }, [loadedFiles])
   return <div ref={ref} />
 }
 
