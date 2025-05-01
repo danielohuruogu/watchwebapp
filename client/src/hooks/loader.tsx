@@ -24,8 +24,6 @@ export function useLoader() {
         '/assets/face_analogue2.3dm',
         '/assets/strap_cotton.3dm',
         '/assets/strap_rubber.3dm',
-        // '/assets/complete_digital.3dm',
-        // '/assets/complete_analogue_face1.3dm'
       ]
 
       const modelsRefHolder: modelOptions = modelOptionsRef.current || {}
@@ -51,7 +49,6 @@ export function useLoader() {
           path,
           (object: Three.Object3D) => {
             object.traverse((child) => {
-              // console.log({child})
               const modelBitGroupName = child.name
               // if the child has no name, don't bother
               if (!modelBitGroupName) {
@@ -76,12 +73,10 @@ export function useLoader() {
               if (!modelsRefHolder[part][option][sanitizedModelBitGroupName]) {
                 modelsRefHolder[part][option][sanitizedModelBitGroupName] = []
               }
+              child.scale.set(0.1, 0.1, 0.1)
+              child.rotateX(-Math.PI / 4)
               modelsRefHolder[part][option][sanitizedModelBitGroupName].push(child)
             })
-  
-            // finish up with the object
-            object.scale.set(0.1, 0.1, 0.1)
-            object.rotateX(-Math.PI / 2)
 
             loadedCount++
             if (loadedCount === modelPaths.length) {
@@ -91,9 +86,6 @@ export function useLoader() {
             }
           },
           (undefined),
-          // (xhr: ProgressEvent) => {
-          //   console.log((xhr.loaded / xhr.total * 100) + '% loaded')
-          // },
           (error: unknown) => {
             console.error('An error happened: ', path, error)
             reject(error)

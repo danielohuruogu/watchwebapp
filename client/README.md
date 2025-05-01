@@ -48,3 +48,40 @@ export default tseslint.config({
   },
 })
 ```
+
+# Stuff to do with my app
+
+## "Database" structure for accessing model options in the app
+
+ModelsObject: {
+  modelPart: {
+    partOption: {
+      groupName: [{...various children}]
+    }
+  }
+}
+
+Example, for the Digital configuration:
+
+ModelsObject: {
+  face: {
+    digital: {
+      display: [{...all parts of the model to do with the display}]
+    }
+  },
+  housing: {
+    button: {
+      housing: [{...all parts to do with housing}]
+    }
+  },
+  strap: {
+    cotton: {
+      buckle: [{...all parts to do with the buckle}]
+    }
+  },
+  casing: {
+    button: {
+      screws: [{...all screw objects in the model}]
+    }
+  }
+}

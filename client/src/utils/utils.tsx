@@ -111,15 +111,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   }, [modelOptionsRef, sceneRef, defaultModelRef])
 
-  // const toggleVisibility = useCallback(() => {
-  //   if (!modelOneRef.current || !modelTwoRef.current) {
-  //     console.error('Models not loaded yet')
-  //     return
-  //   }
-  //   modelOneRef.current.visible = !modelOneRef.current.visible
-  //   modelTwoRef.current.visible = !modelTwoRef?.current.visible
-  // }, [])
-
   return (
     <AppContext.Provider value={{
       sceneRef,
@@ -131,7 +122,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       loadedFiles,
       setLoadedFiles,
       loadModelsIntoScene,
-      // toggleVisibility
     }}>
       {children}
     </AppContext.Provider>

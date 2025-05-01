@@ -7,7 +7,7 @@ import { useAnimate } from '../hooks/animate'
 function Start () {
   const ref = useRef<HTMLDivElement>(null)
 
-  const { sceneRef, rendererRef, cameraRef, modelOptionsRef, loadedFiles, setLoadedFiles, loadModelsIntoScene } = useThree()
+  const { sceneRef, rendererRef, cameraRef, loadedFiles, setLoadedFiles, loadModelsIntoScene } = useThree()
   const { initScene } = useInitScene(ref)
   const { loadFile } = useLoader()
   const { animate } = useAnimate()
@@ -16,8 +16,6 @@ function Start () {
   useEffect(() => {
     initScene()
     console.log('initScene called')
-    // Check if the modelOptionsRef is set and loadedFiles is not set before loading the file
-    // console.log('modelOptionsRef.current: ', modelOptionsRef.current)
 
     const animationId = animate()
 
@@ -45,7 +43,7 @@ function Start () {
       }
       window.removeEventListener('resize', handleResize)
     }
-  }, [initScene, animate, sceneRef, rendererRef, cameraRef, modelOptionsRef])
+  }, [initScene, animate, sceneRef, rendererRef, cameraRef])
 
   useEffect(() => {
     console.log('loadedFiles: ', loadedFiles)
@@ -58,14 +56,14 @@ function Start () {
           setLoadedFiles(true)
         })
     }
-  }, [loadedFiles])
+  }, [loadedFiles, loadFile, setLoadedFiles])
 
   useEffect(() => {
     if (loadedFiles) {
       console.log('files are already loaded - load models into scene')
       loadModelsIntoScene()
     }
-  }, [loadedFiles])
+  }, [loadedFiles, loadModelsIntoScene])
   return <div ref={ref} />
 }
 
