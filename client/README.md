@@ -66,22 +66,37 @@ Example, for the Digital configuration:
 ModelsObject: {
   face: {
     digital: {
-      display: [{...all parts of the model to do with the display}]
+      ...display: [{...all parts of the model to do with the display}]
+    },
+    analogue_1: {
+      ...display: [{...all parts of the model to do with the buttons}]
+    },
+    analogue_2: {
+      ...display: [{...all parts of the model to do with the buttons}]
     }
   },
   housing: {
     button: {
-      housing: [{...all parts to do with housing}]
+      ...housing: [{...all parts to do with housing}]
+    },
+    noButton: {
+      ...housing: [{...all screw objects in the model}]
     }
   },
   strap: {
     cotton: {
-      buckle: [{...all parts to do with the buckle}]
-    }
+      ...buckle: [{...all parts to do with the buckle}]
+    },
+    rubber: {
+      ...buckle: [{...all parts to do with the buckle}]
+    },
   },
   casing: {
     button: {
-      screws: [{...all screw objects in the model}]
+      ...screws: [{...all screw objects in the model}]
+    },
+    noButton: {
+      ...screws: [{...all screw objects in the model}]
     }
   }
 }

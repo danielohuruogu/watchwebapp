@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react'
-import { useThree } from '../hooks/three'
-import { useInitScene } from '../hooks/initScene'
-import { useLoader } from '../hooks/loader'
-import { useAnimate } from '../hooks/animate'
+import { useThree } from '@hooks/three'
+import { useInitScene } from '@hooks/initScene'
+import { useLoader } from '@hooks/loader'
+import { useAnimate } from '@hooks/animate'
 
 function Start () {
   const ref = useRef<HTMLDivElement>(null)
