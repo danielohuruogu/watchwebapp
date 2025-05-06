@@ -37,6 +37,7 @@ export const OptionSelect = ({ label, choices }: OptionSelectProps) => {
     console.log('selecting option: ', choices[0])
     if (!currentSelectionRef.current) return
     currentSelectionRef.current[label] = choices[optionIndex]
+    console.log(currentSelectionRef.current)
   }, [choices, optionIndex, label, currentSelectionRef]) // should only run when the options change or the index changes
 
   // whatever the default options are for given parts, the name will need to be set in the text box from the start
