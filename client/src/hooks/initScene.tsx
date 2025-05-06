@@ -1,8 +1,7 @@
 import * as Three from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { useThree } from './three'
-import { useCallback } from 'react'
-
+import { useCallback } from 'react' 
 
 export function useInitScene(ref: React.RefObject<HTMLDivElement | null>) {
   const { sceneRef, cameraRef, rendererRef, orbitControlsRef } = useThree()

@@ -6,12 +6,12 @@ export const AppContext = createContext<{
   sceneRef: React.RefObject<Three.Scene | null>
   cameraRef: React.RefObject<Three.PerspectiveCamera | null>
   rendererRef: React.RefObject<Three.WebGLRenderer | null>
-  geometryRef: React.RefObject<Three.Mesh | null>
   modelOptionsRef: React.RefObject<modelOptions | null>
+  defaultModelRef: React.RefObject<defaultConfigDigital | defaultConfigAnalogue | null>
+  currentSelectionRef: React.RefObject<currentSelection | null>
   orbitControlsRef: React.RefObject<OrbitControls | null>
   loadedFiles: boolean
   setLoadedFiles: React.Dispatch<React.SetStateAction<boolean>>
-  // toggleVisibility: () => void
   loadModelsIntoScene: () => void
 } | null>(null)
 
@@ -20,11 +20,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const sceneRef = useRef<Three.Scene | null>(null)
   const cameraRef = useRef<Three.PerspectiveCamera | null>(null)
   const rendererRef = useRef<Three.WebGLRenderer | null>(null)
-  const geometryRef = useRef<Three.Mesh | null>(null)
   const orbitControlsRef = useRef<OrbitControls | null>(null)
 
-  // refs for the models
+  // refs + containers for the models
   const modelOptionsRef = useRef<modelOptions | null>(null)
+  const currentSelectionRef = useRef<currentSelection | null>(null)
   const defaultModelRef = useRef<defaultConfigDigital | defaultConfigAnalogue | null>(null)
 
   // state for loadedFile
@@ -38,33 +38,17 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     // to begin with I want to select the model options that correspond to one of the default configs outlined
     const digitalConfig: defaultConfigDigital = {
-      housing: {
-        button: modelOptionsRef.current?.housing.button || {}
-      },
-      casing: {
-        button: modelOptionsRef.current?.casing.button || {}
-      },
-      strap: {
-        cotton: modelOptionsRef.current?.strap.cotton || {}
-      },
-      face: {
-        digital: modelOptionsRef.current?.face.digital || {}
-      }
+      housing: 'button',
+      casing: 'button',
+      strap: 'cotton',
+      face: 'digital'
     }
 
     const analogueConfig: defaultConfigAnalogue = {
-      housing: {
-        standard: modelOptionsRef.current?.housing.standard || {}
-      },
-      casing: {
-        standard: modelOptionsRef.current?.casing.standard || {}
-      },
-      strap: {
-        rubber: modelOptionsRef.current?.strap.rubber || {}
-      },
-      face: {
-        analogue1: modelOptionsRef.current?.face.analogue1 || {}
-      }
+      housing: 'standard',
+      casing: 'standard',
+      strap: 'rubber',
+      face: Math.random() > 0.5 ? 'analogue1' : 'analogue2'
     }
     
     // just to see how one gets chosen to begin with
@@ -81,27 +65,25 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     if (defaultModelRef.current) {
       console.log('defaultModelRef.current: ', defaultModelRef.current)
       // go through the current and add them to the scene
-      Object.keys(defaultModelRef.current).forEach((part) => { // example would be strap
-        console.log('part: ', part)
-        Object.keys(defaultModelRef.current![part]).forEach((type) => { // example would be cotton
-          console.log('type: ', type)
-          Object.keys(defaultModelRef.current![part][type]).forEach((modelBitGroupName) => { // example would be buckle
-            console.log('modelBitGroupName: ', modelBitGroupName)
-            // the value should be an array of Three.Object3D objects. add these to the scene
-            const modelBitGroup = defaultModelRef.current![part][type][modelBitGroupName]
-            console.log('modelBitGroup: ', modelBitGroup)
-            if (!modelBitGroup) {
-              console.error(`Model group ${modelBitGroupName} not found`)
-              return
-            }
-            try {
-              modelBitGroup.forEach((modelBit) => {
-                console.log('modelBit: ', modelBit)
-                console.log('adding bit to scene')
-                sceneRef.current?.add(modelBit)
-              })
-            } catch (error) {
-              console.error('Error adding model bit group to scene: ', error)
+      Object.entries(defaultModelRef.current).forEach(([partType, option]) => { // example would be strap, cotton
+        console.log('partType: ', partType)
+        console.log('option: ', option)
+        // find the equivalent part in the modelOptionsRef.current
+        // find the children and add it to the scene
+        const selectedModelPart = modelOptionsRef.current![partType][option]
+        console.log('modelPart: ', selectedModelPart)
+        if (!selectedModelPart) {
+          console.error(`No model part found for ${selectedModelPart}`)
+          return
+        }
+        // modelPart could be cotton strap - add all the children to the scene
+        Object.values(selectedModelPart).forEach((group) => {
+          console.log('group: ', group)
+          group.forEach((child) => {
+            if (sceneRef.current) {
+              sceneRef.current.add(child)
+            } else {
+              console.error('sceneRef.current is not yet initialized')
             }
           })
         })
@@ -117,7 +99,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       cameraRef,
       rendererRef,
       modelOptionsRef,
-      geometryRef,
+      defaultModelRef,
+      currentSelectionRef,
       orbitControlsRef,
       loadedFiles,
       setLoadedFiles,

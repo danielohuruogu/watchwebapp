@@ -53,9 +53,9 @@ export default tseslint.config({
 
 ## "Database" structure for accessing model options in the app
 
-ModelsObject: {
-  modelPart: {
-    partOption: {
+ModelsObject as modelOptions: {
+  partOptions: {
+    partGroups: {
       groupName: [{...various children}]
     }
   }

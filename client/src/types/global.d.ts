@@ -10,32 +10,26 @@ interface modelOptions {
 }
 
 // DEFAULT CONFIGURATIONS FOR THE MODELS BEFORE LOADING INTO SCENE
-interface defaultConfigDigital extends modelOptions {
-  housing: {
-    button: partGroups
-  },
-  casing: {
-    button: partGroups
-  },
-  strap: {
-    cotton: partGroups
-  },
-  face: {
-    digital: partGroups
-  }
+
+interface currentSelection {
+  [key: string]: string
+}
+interface defaultConfigDigital extends currentSelection {
+  housing: 'button',
+  casing: 'button',
+  strap: 'cotton',
+  face: 'digital'
 }
 
-interface defaultConfigAnalogue extends modelOptions {
-  housing: {
-    standard: partGroups
-  },
-  casing: {
-    standard: partGroups
-  },
-  strap: {
-    rubber: partGroups
-  },
-  face: {
-    analogue1: partGroups
-  }
+interface defaultConfigAnalogue extends currentSelection{
+  housing: 'standard',
+  casing: 'standard',
+  strap: 'rubber',
+  face: 'analogue1' | 'analogue2'
+}
+
+// INTERFACES FOR PROPS
+interface OptionSelectProps {
+  label: string;
+  choices: string[];
 }

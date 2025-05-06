@@ -1,14 +1,15 @@
 import { useEffect, useRef } from 'react'
-import { useThree } from '@hooks/three'
-import { useInitScene } from '@hooks/initScene'
-import { useLoader } from '@hooks/loader'
-import { useAnimate } from '@hooks/animate'
+import { useThree } from '../hooks/three'
+import { useInitScene } from '../hooks/initScene'
+import { useLoader } from '../hooks/loader'
+import { useAnimate } from '../hooks/animate'
+import { Config } from '../ui/config'
 
 function Start () {
-  const ref = useRef<HTMLDivElement>(null)
+  const sceneContainer = useRef<HTMLDivElement>(null)
 
   const { sceneRef, rendererRef, cameraRef, loadedFiles, setLoadedFiles, loadModelsIntoScene } = useThree()
-  const { initScene } = useInitScene(ref)
+  const { initScene } = useInitScene(sceneContainer)
   const { loadFile } = useLoader()
   const { animate } = useAnimate()
 
@@ -34,8 +35,8 @@ function Start () {
           cancelAnimationFrame(animationId)
       }
       // Remove the renderer from DOM
-      if (rendererRef.current && ref.current) {
-        ref.current.removeChild(rendererRef.current.domElement)
+      if (rendererRef.current && sceneContainer.current) {
+        sceneContainer.current.removeChild(rendererRef.current.domElement)
       }
       // Dispose Three.js resources
       if (rendererRef.current) {
@@ -64,7 +65,15 @@ function Start () {
       loadModelsIntoScene()
     }
   }, [loadedFiles, loadModelsIntoScene])
-  return <div ref={ref} />
+
+  return (
+    <div className='start-container'>
+      <div ref={sceneContainer} className="scene-container" />
+      <div className="gui-container">
+        <Config />
+      </div>
+    </div>
+  )
 }
 
 export default Start
