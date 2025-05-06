@@ -66,19 +66,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       console.log('defaultModelRef.current: ', defaultModelRef.current)
       // go through the current and add them to the scene
       Object.entries(defaultModelRef.current).forEach(([partType, option]) => { // example would be strap, cotton
-        console.log('partType: ', partType)
-        console.log('option: ', option)
         // find the equivalent part in the modelOptionsRef.current
         // find the children and add it to the scene
         const selectedModelPart = modelOptionsRef.current![partType][option]
-        console.log('modelPart: ', selectedModelPart)
         if (!selectedModelPart) {
           console.error(`No model part found for ${selectedModelPart}`)
           return
         }
         // modelPart could be cotton strap - add all the children to the scene
         Object.values(selectedModelPart).forEach((group) => {
-          console.log('group: ', group)
           group.forEach((child) => {
             if (sceneRef.current) {
               sceneRef.current.add(child)

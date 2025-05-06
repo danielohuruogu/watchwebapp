@@ -51,16 +51,9 @@ export function useLoader() {
             object.traverse((child) => {
               const modelBitGroupName = child.name
               // if the child has no name, don't bother
-              if (!modelBitGroupName) {
-                console.log('child has no name - cannot use')
-                return
-              }
-
-              if (modelsRefHolder === undefined) {
-                console.log('something weird has happened - get out for now')
-                return
-              }
-              // sanitise modelBitGroupName to remove quotes
+              if (!modelBitGroupName) return
+              if (modelsRefHolder === undefined) return
+              
               const sanitizedModelBitGroupName = modelBitGroupName.replace(/['"]+/g, '')
 
               // if the required objects are not already in place, set them up
