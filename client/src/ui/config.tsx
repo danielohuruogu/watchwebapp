@@ -15,7 +15,7 @@ import { useThree } from '../hooks/three'
 // if the number exceeds that, I want a second page to appear
 
 export const Config = () => {
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   // pull in the model options from the context
   const { modelOptionsRef } = useThree()
@@ -31,7 +31,7 @@ export const Config = () => {
     }
     modelOptions = modelOptionsRef.current
     partsOfWatch = Object.keys(modelOptions) // should be ['face', 'housing', 'strap', 'casing']
-    setLoading(true)
+    setLoading(false)
   }, [modelOptionsRef]) // should only run once when the component mounts
   // need to get the keys at the first level of the modelOptionsRef object
 

@@ -66,7 +66,7 @@ export function useLoader() {
               if (!modelsRefHolder[part][option][sanitizedModelBitGroupName]) {
                 modelsRefHolder[part][option][sanitizedModelBitGroupName] = []
               }
-              child.scale.set(0.1, 0.1, 0.1)
+              child.scale.set(0.01, 0.01, 0.01)
               child.rotateX(-Math.PI / 4)
               modelsRefHolder[part][option][sanitizedModelBitGroupName].push(child)
             })
