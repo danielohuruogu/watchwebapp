@@ -15,14 +15,12 @@ import { useThree } from '../hooks/three'
 // if the number exceeds that, I want a second page to appear
 
 export const Config = () => {
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   // pull in the model options from the context
   const { modelOptionsRef } = useThree()
   // create refs for the options
   const optionsRef = useRef<string[] | null>(null)
-  // let partsOfWatch: string[] = [] // should be ['face', 'housing', 'strap', 'casing']
-  // let modelOptions: modelOptions = {} // should be {face: {}, housing: {}, strap: {}, casing: {}}
 
   useEffect(() => {
     console.log('modelOptionsRef: ', modelOptionsRef.current)
@@ -32,7 +30,7 @@ export const Config = () => {
       return
     }
     optionsRef.current = Object.keys(modelOptionsRef.current) // should be ['face', 'housing', 'strap', 'casing']
-    setLoading(true)
+    setLoading(false)
   }, [modelOptionsRef])
 
   // TODO

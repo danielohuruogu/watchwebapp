@@ -61,9 +61,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
 
     // need to properly load in the models here
-    console.log('the current sceneRef is: ' ,sceneRef.current)
     if (defaultModelRef.current) {
-      console.log('defaultModelRef.current: ', defaultModelRef.current)
       // go through the current and add them to the scene
       Object.entries(defaultModelRef.current).forEach(([partType, option]) => { // example would be strap, cotton
         // find the equivalent part in the modelOptionsRef.current
@@ -85,7 +83,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         })
       })
       console.log('models added to scene')
-      console.log(sceneRef.current?.children)
     }
   }, [modelOptionsRef, sceneRef, defaultModelRef])
 
