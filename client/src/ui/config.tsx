@@ -15,11 +15,12 @@ import { useThree } from '../hooks/three'
 // if the number exceeds that, I want a second page to appear
 
 export const Config = () => {
-const [loaded, setLoaded] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   // pull in the model options from the context
   const { modelOptionsRef } = useThree()
   let partsOfWatch: string[] = [] // should be ['face', 'housing', 'strap', 'casing']
+  let modelOptions: modelOptions = {} // should be {face: {}, housing: {}, strap: {}, casing: {}}
 
   useEffect(() => {
     console.log('modelOptionsRef: ', modelOptionsRef.current)
@@ -28,9 +29,9 @@ const [loaded, setLoaded] = useState(false)
       console.log('will figure out how to handle this later')
       return
     }
-    const modelOptions: modelOptions = modelOptionsRef.current
+    modelOptions = modelOptionsRef.current
     partsOfWatch = Object.keys(modelOptions) // should be ['face', 'housing', 'strap', 'casing']
-    setLoaded(true)
+    setLoading(true)
   }, [modelOptionsRef]) // should only run once when the component mounts
   // need to get the keys at the first level of the modelOptionsRef object
 
@@ -39,11 +40,16 @@ const [loaded, setLoaded] = useState(false)
   // maybe another button to say Button or No Button
 
   // the optionChoices will be the label for the options
+  if (loading) {
+    return (
+      <OptionSelect label={'loading'} choices={['loading']} />
+    )
+  }
 
   return (
     <div className="config-section">
       <div className="optionSelect-area">
-        {loaded ? partsOfWatch.map(part => {
+        {partsOfWatch.map(part => {
           const labelForSelector = part.charAt(0).toUpperCase() + part.slice(1)
           // need to deal with an object filled with objects, that I want to turn into an array of objects
           
@@ -59,9 +65,7 @@ const [loaded, setLoaded] = useState(false)
               choices={choices}
             />
           )
-        }) : (
-          <div>Loading...</div>
-        )}
+        })}
       </div>
       <div className="colourSelect-area">
         TODO
