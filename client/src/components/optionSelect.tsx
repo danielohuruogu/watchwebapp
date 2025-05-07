@@ -45,7 +45,8 @@ export const OptionSelect = ({ label, choices }: OptionSelectProps) => {
     if (!defaultModelRef.current || !label) return
     console.log('current default options are: ', defaultModelRef.current)
     console.log('label for the selector is:', label)
-    console.log('setting option to: ', Object.keys(defaultModelRef.current[label])[0])
+    if (!defaultModelRef.current[label]) return
+    console.log('setting default option: ', Object.keys(defaultModelRef.current[label])[0])
     setOption(Object.keys(defaultModelRef.current[label])[0])
   }, [defaultModelRef, label]) // should only run once when the component mounts
 

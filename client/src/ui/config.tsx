@@ -18,49 +18,46 @@ export const Config = () => {
   const [loading, setLoading] = useState(true)
 
   // pull in the model options from the context
-  const { modelOptionsRef } = useThree()
+  const { loadedFiles, modelOptionsRef } = useThree()
   // create refs for the options
   const optionsRef = useRef<string[] | null>(null)
 
   useEffect(() => {
     console.log('modelOptionsRef: ', modelOptionsRef.current)
-    if (!modelOptionsRef.current) {
+    if (!loadedFiles) {
       // TODO
       console.log('will figure out how to handle this later')
       return
     }
-    optionsRef.current = Object.keys(modelOptionsRef.current) // should be ['face', 'housing', 'strap', 'casing']
+    optionsRef.current = modelOptionsRef.current && Object.keys(modelOptionsRef.current) // should be ['face', 'housing', 'strap', 'casing']
     setLoading(false)
-  }, [modelOptionsRef])
+  }, [loadedFiles, modelOptionsRef])
 
   // TODO
   // would also need to rule out certain choices depending on what else has been selected
   // maybe another button to say Button or No Button
 
-  if (loading) {
-    return (
-      <OptionSelect label={'loading'} choices={['loading']} />
-    )
-  }
-
   return (
     <div className="config-section">
       <div className="optionSelect-area">
-        {(optionsRef.current && modelOptionsRef.current) && optionsRef.current.map(part => {
-          const labelForSelector = part.charAt(0).toUpperCase() + part.slice(1)
+        {loading ?
+          <OptionSelect label={'loading'} choices={['loading']} /> 
+          : 
+          (optionsRef.current && modelOptionsRef.current) && optionsRef.current.map(part => {
+            const labelForSelector = part.charAt(0).toUpperCase() + part.slice(1)
           
-          const choices: string[] = []
-          Object.keys(modelOptionsRef.current![part] as partOptions).forEach((choiceName) => {
-            console.log('possible choice name is: ',choiceName)
-            choices.push(choiceName)
-          })
+            const choices: string[] = []
+            Object.keys(modelOptionsRef.current![part] as partOptions).forEach((choiceName) => {
+              console.log('possible choice name is: ',choiceName)
+              choices.push(choiceName)
+            })
       
-          return (
-            <OptionSelect
-              label={labelForSelector}
-              choices={choices}
-            />
-          )
+            return (
+              <OptionSelect
+                label={labelForSelector}
+                choices={choices}
+              />
+            )
         })}
       </div>
       <div className="colourSelect-area">
