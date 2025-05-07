@@ -25,7 +25,7 @@ export function useInitScene(ref: React.RefObject<HTMLDivElement | null>) {
     scene.add(camera)
 
     const renderer = new Three.WebGLRenderer()
-    renderer.setSize(window.innerWidth, window.innerHeight)
+    renderer.setSize(window.innerWidth/2, window.innerHeight/2)
     rendererRef.current = renderer
 
     ref.current.appendChild(renderer.domElement)

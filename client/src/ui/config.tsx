@@ -1,6 +1,6 @@
 // import { useCallback, useEffect, useRef } from 'react'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { OptionSelect } from '../components/optionSelect'
 import { useThree } from '../hooks/three'
 
@@ -19,8 +19,10 @@ export const Config = () => {
 
   // pull in the model options from the context
   const { modelOptionsRef } = useThree()
-  let partsOfWatch: string[] = [] // should be ['face', 'housing', 'strap', 'casing']
-  let modelOptions: modelOptions = {} // should be {face: {}, housing: {}, strap: {}, casing: {}}
+  // create refs for the options
+  const optionsRef = useRef<string[] | null>(null)
+  // let partsOfWatch: string[] = [] // should be ['face', 'housing', 'strap', 'casing']
+  // let modelOptions: modelOptions = {} // should be {face: {}, housing: {}, strap: {}, casing: {}}
 
   useEffect(() => {
     console.log('modelOptionsRef: ', modelOptionsRef.current)
@@ -29,17 +31,14 @@ export const Config = () => {
       console.log('will figure out how to handle this later')
       return
     }
-    modelOptions = modelOptionsRef.current
-    partsOfWatch = Object.keys(modelOptions) // should be ['face', 'housing', 'strap', 'casing']
+    optionsRef.current = Object.keys(modelOptionsRef.current) // should be ['face', 'housing', 'strap', 'casing']
     setLoading(true)
-  }, [modelOptionsRef]) // should only run once when the component mounts
-  // need to get the keys at the first level of the modelOptionsRef object
+  }, [modelOptionsRef])
 
-
+  // TODO
   // would also need to rule out certain choices depending on what else has been selected
   // maybe another button to say Button or No Button
 
-  // the optionChoices will be the label for the options
   if (loading) {
     return (
       <OptionSelect label={'loading'} choices={['loading']} />
@@ -49,12 +48,11 @@ export const Config = () => {
   return (
     <div className="config-section">
       <div className="optionSelect-area">
-        {partsOfWatch.map(part => {
+        {(optionsRef.current && modelOptionsRef.current) && optionsRef.current.map(part => {
           const labelForSelector = part.charAt(0).toUpperCase() + part.slice(1)
-          // need to deal with an object filled with objects, that I want to turn into an array of objects
           
           const choices: string[] = []
-          Object.keys(modelOptions[part] as partOptions).forEach((choiceName) => {
+          Object.keys(modelOptionsRef.current![part] as partOptions).forEach((choiceName) => {
             console.log('possible choice name is: ',choiceName)
             choices.push(choiceName)
           })

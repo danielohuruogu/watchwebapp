@@ -23,7 +23,7 @@ function Start () {
     const handleResize = () => {
       if (cameraRef.current && rendererRef.current) {
         cameraRef.current.updateProjectionMatrix();
-        rendererRef.current.setSize(window.innerWidth, window.innerHeight);
+        rendererRef.current.setSize(window.innerWidth/2, window.innerHeight/2);
       }
     }
 
