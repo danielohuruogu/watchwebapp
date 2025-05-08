@@ -4,7 +4,7 @@ import { useThree } from '../hooks/three'
 export const OptionSelect = ({ label, choices }: OptionSelectProps) => {
   // options should be an array of objects, each object containing a label and groups
   const [optionIndex, setOptionIndex] = useState(0)
-  const [option, setOption] = useState<string | null>(null)
+  const [option, setOption] = useState<string>('option')
 
   // each time one of these is generated, create a label,
   // a name box for the current selected option and two buttons either side of the name box to cycle
@@ -18,7 +18,6 @@ export const OptionSelect = ({ label, choices }: OptionSelectProps) => {
   const { defaultModelRef, currentSelectionRef } = useThree()
 
   const handleCycle = () => {
-    console.log('cycling through options')
     setOptionIndex((prevIndex) => {
       const newIndex = prevIndex + 1
       if (newIndex >= choices.length) {
@@ -37,22 +36,17 @@ export const OptionSelect = ({ label, choices }: OptionSelectProps) => {
     console.log('selecting option: ', choices[0])
     if (!currentSelectionRef.current) return
     currentSelectionRef.current[label] = choices[optionIndex]
-    console.log(currentSelectionRef.current)
   }, [choices, optionIndex, label, currentSelectionRef]) // should only run when the options change or the index changes
 
   // whatever the default options are for given parts, the name will need to be set in the text box from the start
   useEffect(() => {
-    if (!defaultModelRef.current || !label) return
-    console.log('current default options are: ', defaultModelRef.current)
-    console.log('label for the selector is:', label)
-    if (!defaultModelRef.current[label]) return
-    console.log('setting default option: ', Object.keys(defaultModelRef.current[label])[0])
-    setOption(Object.keys(defaultModelRef.current[label])[0])
+    if (!defaultModelRef.current || !label || !defaultModelRef.current[label]) return
+    setOption(defaultModelRef.current[label])
   }, [defaultModelRef, label]) // should only run once when the component mounts
 
   return (
     <div className="option-select">
-      <label className="option-select-label">{label}</label>
+      <label className="option-select-label">{label.charAt(0).toUpperCase() + label.slice(1)}</label>
       <div className="option-select-box">
         <button
           className="a" 
@@ -60,7 +54,7 @@ export const OptionSelect = ({ label, choices }: OptionSelectProps) => {
           >
           Left
         </button>
-        <input type="text" className="button" value={option || 'empty box'} readOnly />
+        <input type="text" className="button" value={option.charAt(0).toUpperCase() + option.slice(1)} readOnly />
         <button
           className="a"
           onClick={handleCycle}
