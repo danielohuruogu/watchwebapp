@@ -5,7 +5,7 @@ interface partGroups {
 interface partOptions {
   [key: string]: partGroups
 }
-interface modelOptions {
+interface models {
   [key:string ]: partOptions
 }
 
@@ -32,4 +32,11 @@ interface defaultConfigAnalogue extends currentSelection{
 interface OptionSelectProps {
   label: string;
   choices: string[];
+  options: object;
+  setOptions: React.Dispatch<React.SetStateAction<currentSelection>>;
+}
+
+interface ColourSelectProps {
+  label: string;
+  colourChoices: string[];
 }

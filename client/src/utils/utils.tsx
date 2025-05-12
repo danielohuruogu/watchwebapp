@@ -6,9 +6,9 @@ export const AppContext = createContext<{
   sceneRef: React.RefObject<Three.Scene | null>
   cameraRef: React.RefObject<Three.PerspectiveCamera | null>
   rendererRef: React.RefObject<Three.WebGLRenderer | null>
-  modelOptionsRef: React.RefObject<modelOptions | null>
+  modelOptionsRef: React.RefObject<models | null>
   defaultModelRef: React.RefObject<defaultConfigDigital | defaultConfigAnalogue | null>
-  currentSelectionRef: React.RefObject<currentSelection | null>
+  currentSelectionRef: React.RefObject<models>
   orbitControlsRef: React.RefObject<OrbitControls | null>
   loadedFiles: boolean
   setLoadedFiles: React.Dispatch<React.SetStateAction<boolean>>
@@ -23,8 +23,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const orbitControlsRef = useRef<OrbitControls | null>(null)
 
   // refs + containers for the models
-  const modelOptionsRef = useRef<modelOptions | null>(null)
-  const currentSelectionRef = useRef<currentSelection | null>(null)
+  const modelOptionsRef = useRef<models | null>(null)
+  const currentSelectionRef = useRef<models>({})
   const defaultModelRef = useRef<defaultConfigDigital | defaultConfigAnalogue | null>(null)
 
   // state for loadedFile
@@ -64,6 +64,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     if (defaultModelRef.current) {
       // go through the current and add them to the scene
       Object.entries(defaultModelRef.current).forEach(([partType, option]) => { // example would be strap, cotton
+        // add the current selection to the currentSelectionRef, for later use
+        // console.log('trying to set the currentSelectionRef')
+
+        // currentSelectionRef.current[partType] = {
+        //   ...currentSelectionRef.current[partType],
+        //   [option] :modelOptionsRef.current![partType][option]
+        // }
+        
         // find the equivalent part in the modelOptionsRef.current
         // find the children and add it to the scene
         const selectedModelPart = modelOptionsRef.current![partType][option]
@@ -84,7 +92,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       })
       console.log('models added to scene')
     }
-  }, [modelOptionsRef, sceneRef, defaultModelRef])
+  }, [modelOptionsRef, sceneRef, defaultModelRef, currentSelectionRef])
 
   return (
     <AppContext.Provider value={{
