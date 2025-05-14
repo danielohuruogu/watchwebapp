@@ -48,10 +48,10 @@ export const Config = () => {
     optionsRef.current = modelOptionsRef.current && Object.keys(modelOptionsRef.current)
 
     console.log('current currentSelectionRef: ', currentSelectionRef.current)
-    const something = modelOptionsRef.current && Object.entries(modelOptionsRef.current).forEach(([partType, options]) => { // example would be strap, cotton
+    // const something = modelOptionsRef.current && Object.entries(modelOptionsRef.current).forEach(([partType, options]) => { // example would be strap, cotton
 
-      // console.log('currentSelectionRef.current: ', currentSelectionRef.current)
-    })
+    //   // console.log('currentSelectionRef.current: ', currentSelectionRef.current)
+    // })
     setLoading(false)
   }, [loadedFiles, modelOptionsRef, currentSelectionRef])
 
@@ -97,16 +97,13 @@ export const Config = () => {
           options && Object.entries(options).map(([part, option]) => {
             // get the groups for the selected option
             const groups = modelOptionsRef.current![part][option]
-            const colourChoices: string[] = []
-            Object.keys(groups).forEach((groupName) => {
-              colourChoices.push(groupName)
-            })
+            console.log('groups: ', groups)
+            
             return (
               <ColourSelect
-                label={part}
-                choices={colourChoices}
-                options={options}
-                setOptions={setOptions}
+                labelForPart={part}
+                labelForOption={option}
+                groups={groups}
               />
             )
           }

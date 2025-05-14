@@ -37,6 +37,7 @@ interface OptionSelectProps {
 }
 
 interface ColourSelectProps {
-  label: string;
-  colourChoices: string[];
+  labelForPart: string;
+  labelForOption: string;
+  groups: partGroups;
 }
