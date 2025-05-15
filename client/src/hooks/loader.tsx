@@ -26,7 +26,7 @@ export function useLoader() {
         '/assets/strap_rubber.3dm',
       ]
 
-      const modelsRefHolder: modelOptions = modelOptionsRef.current || {}
+      const modelsRefHolder: models = modelOptionsRef.current || {}
 
       // 4 POSSIBLE MODEL PARTS:
       // * STRAP
