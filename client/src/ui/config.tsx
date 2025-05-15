@@ -57,6 +57,7 @@ export const Config = () => {
 
   useEffect(() => {
     // working out what the colour options should be
+    // need this to debug
     console.log('current options are', options)
   }, [options])
 
