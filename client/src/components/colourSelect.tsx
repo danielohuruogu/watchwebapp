@@ -1,21 +1,21 @@
 export const ColourSelect = ({ labelForPart, labelForOption, groups }: ColourSelectProps) => {
-  console.log('colour select labelForPart: ', labelForPart)
-  console.log('colour select labelForOption: ', labelForOption)
-  console.log('groups: ', groups)
+  // console.log('colour select labelForPart: ', labelForPart)
+  // console.log('colour select labelForOption: ', labelForOption)
+  // console.log('groups: ', groups)
 
   if (groups === null) return <div>no groups</div>
   Object.entries(groups).forEach(([groupName, groupChildren]) => {
-    console.log('groupName: ', groupName)
-    console.log('groupChildren: ', groupChildren)
+    // console.log('groupName: ', groupName)
+    // console.log('groupChildren: ', groupChildren)
     const colour = groupChildren[0].material.color
-    console.log('colour: ', colour)
+    // console.log('colour: ', colour)
   })
 
   const changeColour = (groupName: string, colour: string) => {
     // will be called on selector button change
     // on button change, colour will be applied to all children of the group
-    console.log('changing colour of group: ', groupName)
-    console.log('changing colour to: ', colour)
+    // console.log('changing colour of group: ', groupName)
+    // console.log('changing colour to: ', colour)
     // find the group in the modelOptionsRef.current and set the colour of all children to the new colour
   }
 

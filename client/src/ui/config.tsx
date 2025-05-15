@@ -21,7 +21,7 @@ export const Config = () => {
 
   // pull in the model options from the context
   const { loadedFiles, modelOptionsRef, defaultModelRef, currentSelectionRef } = useThree()
-  // create refs for the options
+  // create refs for the options to choose from
   const optionsRef = useRef<string[] | null>(null)
   // const colourOptionsRef = useRef<string[] | null>(null)
 
@@ -47,7 +47,7 @@ export const Config = () => {
     // this should be ['strap', 'buckle'] for example
     optionsRef.current = modelOptionsRef.current && Object.keys(modelOptionsRef.current)
 
-    console.log('current currentSelectionRef: ', currentSelectionRef.current)
+    // console.log('current currentSelectionRef: ', currentSelectionRef.current)
     // const something = modelOptionsRef.current && Object.entries(modelOptionsRef.current).forEach(([partType, options]) => { // example would be strap, cotton
 
     //   // console.log('currentSelectionRef.current: ', currentSelectionRef.current)
@@ -55,11 +55,11 @@ export const Config = () => {
     setLoading(false)
   }, [loadedFiles, modelOptionsRef, currentSelectionRef])
 
-  useEffect(() => {
-    // working out what the colour options should be
-    // need this to debug
-    console.log('current options are', options)
-  }, [options])
+  // useEffect(() => {
+  //   // working out what the colour options should be
+  //   // need this to debug
+  //   console.log('current options are', options)
+  // }, [options])
 
   // TODO
   // would also need to rule out certain choices depending on what else has been selected
@@ -79,9 +79,8 @@ export const Config = () => {
       
             return (
               <OptionSelect
-                label={part}
-                choices={choices}
-                options={options}
+                label={part} // e.g. strap, casing, face, housing
+                choices={choices} // e.g. ['cotton', 'rubber'] or ['button', 'standard']
                 setOptions={setOptions}
               />
             )
@@ -98,7 +97,7 @@ export const Config = () => {
           options && Object.entries(options).map(([part, option]) => {
             // get the groups for the selected option
             const groups = modelOptionsRef.current![part][option]
-            console.log('groups: ', groups)
+            // console.log('groups: ', groups)
             
             return (
               <ColourSelect
