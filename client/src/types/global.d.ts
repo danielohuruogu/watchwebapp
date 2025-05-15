@@ -40,3 +40,9 @@ interface ColourSelectProps {
   labelForOption: string;
   groups: partGroups;
 }
+
+interface ColourPickerProps {
+  groupName: string;
+  objectColour: string;
+  setObjectColour: React.Dispatch<React.SetStateAction<currentSelection>>;
+}

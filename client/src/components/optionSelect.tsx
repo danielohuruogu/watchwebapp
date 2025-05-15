@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { useThree } from '../hooks/three'
 
 export const OptionSelect = ({ label, choices, setOptions }: OptionSelectProps) => {
-  // options should be an array of objects, each object containing a label and groups
   const [optionIndex, setOptionIndex] = useState(0)
   const [boxValue, setBoxValue] = useState<string>('')
 
@@ -30,8 +29,6 @@ export const OptionSelect = ({ label, choices, setOptions }: OptionSelectProps) 
     })
   }
 
-  // TODO - WILL DEAL WITH SETTING THE FINISHED OPTION LATER
-  // will need a useEffect to listen out for a change and apply after a delay
   useEffect(() => {
     if (!currentSelectionRef.current) return
 

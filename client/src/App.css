@@ -68,3 +68,24 @@
   height: 100%;
   background-color: #1a1a1a;
 }
+
+.color-picker-container {
+  position: relative;
+  display: inline-block;
+}
+
+.color-swatch {
+  width: 24px;
+  height: 24px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.popover {
+  position: absolute;
+  top: 30px;
+  left: 0;
+  z-index: 10;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}

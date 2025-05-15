@@ -1,23 +1,29 @@
+import { useState, useEffect } from 'react'
+import ColourPicker from './colourPicker'
+import { useThree } from '../hooks/three'
+
 export const ColourSelect = ({ labelForPart, labelForOption, groups }: ColourSelectProps) => {
-  // console.log('colour select labelForPart: ', labelForPart)
-  // console.log('colour select labelForOption: ', labelForOption)
-  // console.log('groups: ', groups)
+  const { modelOptionsRef } = useThree()
+  
+  // colours for all groups will be kept in a state
+  const [groupColours, setGroupColours] = useState<currentSelection>({})
 
-  if (groups === null) return <div>no groups</div>
-  Object.entries(groups).forEach(([groupName, groupChildren]) => {
-    // console.log('groupName: ', groupName)
-    // console.log('groupChildren: ', groupChildren)
-    const colour = groupChildren[0].material.color
-    // console.log('colour: ', colour)
-  })
-
-  const changeColour = (groupName: string, colour: string) => {
-    // will be called on selector button change
-    // on button change, colour will be applied to all children of the group
-    // console.log('changing colour of group: ', groupName)
-    // console.log('changing colour to: ', colour)
-    // find the group in the modelOptionsRef.current and set the colour of all children to the new colour
+  const changeColour = () => {
+    if (!modelOptionsRef.current) return
+    Object.entries(groupColours).forEach(([groupName, colour]) => {
+      const group = modelOptionsRef.current![labelForPart][labelForOption][groupName]
+      if (!group) return 
+      group.forEach(child => {
+        child.material.color.setStyle(colour)
+      })
+    })
   }
+
+  useEffect(() => {
+    if (!groups) return
+    
+    changeColour()
+  }, [groupColours, modelOptionsRef])
 
   return (
     <div className="colour-select">
@@ -25,14 +31,22 @@ export const ColourSelect = ({ labelForPart, labelForOption, groups }: ColourSel
         {labelForPart && labelForPart.charAt(0).toUpperCase() + labelForPart.slice(1)}
       </label>
       {labelForOption}
-      {/* {groups && groups.map((choice, index) => {
+      {groups && Object.entries(groups).map(([groupName, groupChildren]) => {
         return (
-          <div key={index} className="colour-select-option">
-            {choice}
+          <div
+            key={`${labelForPart}.${labelForOption}.${groupName}`}
+          >
+            <label className="colour-select-label">
+              {groupName.charAt(0).toUpperCase() + groupName.slice(1)}
+            </label>
+            <ColourPicker
+              groupName={groupName}
+              objectColour={groupChildren[0].material.color.getStyle()}
+              setObjectColour={setGroupColours}
+            />
           </div>
         )
-      }
-      )} */}
+      })}
     </div>
   )
 }
