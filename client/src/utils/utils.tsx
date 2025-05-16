@@ -65,13 +65,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       // go through the current and add them to the scene
       Object.entries(defaultModelRef.current).forEach(([partType, option]) => { // example would be strap, cotton
         // add the current selection to the currentSelectionRef, for later use
-        // console.log('trying to set the currentSelectionRef')
 
-        // currentSelectionRef.current[partType] = {
-        //   ...currentSelectionRef.current[partType],
-        //   [option] :modelOptionsRef.current![partType][option]
-        // }
-        
         // find the equivalent part in the modelOptionsRef.current
         // find the children and add it to the scene
         const selectedModelPart = modelOptionsRef.current![partType][option]
