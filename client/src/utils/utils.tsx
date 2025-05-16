@@ -8,7 +8,7 @@ export const AppContext = createContext<{
   rendererRef: React.RefObject<Three.WebGLRenderer | null>
   modelOptionsRef: React.RefObject<models | null>
   defaultModelRef: React.RefObject<defaultConfigDigital | defaultConfigAnalogue | null>
-  currentSelectionRef: React.RefObject<models>
+  displayedSelectionRef: React.RefObject<models | null>
   orbitControlsRef: React.RefObject<OrbitControls | null>
   loadedFiles: boolean
   setLoadedFiles: React.Dispatch<React.SetStateAction<boolean>>
@@ -24,7 +24,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   // refs + containers for the models
   const modelOptionsRef = useRef<models | null>(null)
-  const currentSelectionRef = useRef<models>({})
+  const displayedSelectionRef = useRef<models>(null)
   const defaultModelRef = useRef<defaultConfigDigital | defaultConfigAnalogue | null>(null)
 
   // state for loadedFile
@@ -64,16 +64,25 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     if (defaultModelRef.current) {
       // go through the current and add them to the scene
       Object.entries(defaultModelRef.current).forEach(([partType, option]) => { // example would be strap, cotton
-        // add the current selection to the currentSelectionRef, for later use
-
-        // find the equivalent part in the modelOptionsRef.current
-        // find the children and add it to the scene
         const selectedModelPart = modelOptionsRef.current![partType][option]
         if (!selectedModelPart) {
           console.error(`No model part found for ${selectedModelPart}`)
           return
         }
-        // modelPart could be cotton strap - add all the children to the scene
+        if (!displayedSelectionRef.current) {
+          console.error('displayedSelectionRef.current is not initialized')
+          return
+        }
+        // add the current selection to the displayedSelectionRef, for later use
+        displayedSelectionRef.current = {
+          ...displayedSelectionRef.current,
+          [partType]: {
+            ...(displayedSelectionRef.current?.[partType] || {}),
+            [option]: selectedModelPart
+          }
+        }
+
+        // find the children and add it to the scene
         Object.values(selectedModelPart).forEach((group) => {
           group.forEach((child) => {
             if (sceneRef.current) {
@@ -86,7 +95,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       })
       console.log('models added to scene')
     }
-  }, [modelOptionsRef, sceneRef, defaultModelRef, currentSelectionRef])
+  }, [modelOptionsRef, sceneRef, defaultModelRef])
 
   return (
     <AppContext.Provider value={{
@@ -95,7 +104,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       rendererRef,
       modelOptionsRef,
       defaultModelRef,
-      currentSelectionRef,
+      displayedSelectionRef,
       orbitControlsRef,
       loadedFiles,
       setLoadedFiles,

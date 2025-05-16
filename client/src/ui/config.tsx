@@ -3,14 +3,46 @@ import { OptionSelect } from '../components/optionSelect'
 import { ColourSelect } from '../components/colourSelect'
 import { useThree } from '../hooks/three'
 import { Loading } from '../components/loading'
+import { toggleVisibility } from "../utils/toggleVisibility"
 
 export const Config = () => {
   const [loading, setLoading] = useState(true)
-  const [options, setOptions] = useState<currentSelection>({})
+  // options state to keep track of all the current selections for each part
+  // will end up looking like { strap: 'cotton', casing: 'button', face: 'standard', housing: 'standard' }
+  const [currentSelection, setCurrentSelection] = useState<currentSelection>({})
 
-  const { loadedFiles, modelOptionsRef, currentSelectionRef } = useThree()
-  const optionsRef = useRef<string[] | null>(null)
+  // getting the refs from the useThree hook
+  const { sceneRef, loadedFiles, modelOptionsRef, displayedSelectionRef } = useThree()
 
+  // container for the model options to persist across renders
+  const possibleOptionsRef = useRef<string[] | null>(null)
+
+  // useEffect to toggle the visibility of the model options
+  useEffect(() => {
+    if (!displayedSelectionRef.current || !sceneRef.current || !modelOptionsRef.current) return
+    console.log('displayedSelectionRef: ', displayedSelectionRef.current)
+
+    if (Object.keys(currentSelection).length > 0) {
+      displayedSelectionRef.current = {}
+      Object.entries(currentSelection).forEach(([partType, option]) => {
+        const selectedModelPart = modelOptionsRef.current![partType][option]
+        if (!selectedModelPart) {
+          console.error(`No model part found for ${partType}.${option}`)
+          return
+        }
+        displayedSelectionRef.current = {
+          ...displayedSelectionRef.current,
+          [partType]: {
+            [option]: selectedModelPart
+          }
+        }
+      })
+    }
+
+    toggleVisibility(sceneRef.current, displayedSelectionRef.current)
+  }, [displayedSelectionRef, currentSelection, modelOptionsRef]);
+
+  // useEffect to initialise the choices
   useEffect(() => {
     console.log('modelOptionsRef: ', modelOptionsRef.current)
     if (!loadedFiles) {
@@ -19,13 +51,12 @@ export const Config = () => {
       return
     }
     if (!modelOptionsRef.current) {
-      console.error('modelOptionsRef.current is not set')
+      console.error('modelOptionsRef.current is not yet set')
       return
     }
-    optionsRef.current = modelOptionsRef.current && Object.keys(modelOptionsRef.current)
-
+    possibleOptionsRef.current = modelOptionsRef.current && Object.keys(modelOptionsRef.current)
     setLoading(false)
-  }, [loadedFiles, modelOptionsRef, currentSelectionRef])
+  }, [loadedFiles, modelOptionsRef, possibleOptionsRef])
 
   // TODO
   // would also need to rule out certain choices depending on what else has been selected
@@ -37,7 +68,7 @@ export const Config = () => {
         {loading ?
           <Loading />
           : 
-          (optionsRef.current && modelOptionsRef.current) && optionsRef.current.map(part => {
+          (possibleOptionsRef.current && modelOptionsRef.current) && possibleOptionsRef.current.map(part => {
             const choices: string[] = []
             Object.keys(modelOptionsRef.current![part] as partOptions).forEach((choiceName) => {
               choices.push(choiceName)
@@ -47,8 +78,8 @@ export const Config = () => {
               <OptionSelect
                 key={part} // e.g. strap, casing, face, housing
                 label={part} // e.g. strap, casing, face, housing
-                choices={choices} // e.g. ['cotton', 'rubber'] or ['button', 'standard']
-                setOptions={setOptions}
+                choices={choices} // e.g. for strap, ['cotton', 'rubber']; for housing, ['button', 'standard']
+                setCurrentSelection={setCurrentSelection}
               />
             )
         })}
@@ -57,7 +88,7 @@ export const Config = () => {
         {loading ? 
           <Loading />
           : 
-          options && Object.entries(options).map(([part, option]) => {
+          currentSelection && Object.entries(currentSelection).map(([part, option]) => {
             // get the groups for the selected option
             const groups = modelOptionsRef.current![part][option]
             

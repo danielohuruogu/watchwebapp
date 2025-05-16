@@ -32,7 +32,7 @@ interface defaultConfigAnalogue extends currentSelection{
 interface OptionSelectProps {
   label: string;
   choices: string[];
-  setOptions: React.Dispatch<React.SetStateAction<currentSelection>>;
+  setCurrentSelection: React.Dispatch<React.SetStateAction<currentSelection>>;
 }
 
 interface ColourSelectProps {

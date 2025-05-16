@@ -3,15 +3,15 @@ import ColourPicker from './colourPicker'
 import { useThree } from '../hooks/three'
 
 export const ColourSelect = ({ labelForPart, labelForOption, groups }: ColourSelectProps) => {
-  const { modelOptionsRef } = useThree()
+  const { displayedSelectionRef } = useThree()
   
   // colours for all groups will be kept in a state
   const [groupColours, setGroupColours] = useState<currentSelection>({})
 
   const changeColour = () => {
-    if (!modelOptionsRef.current) return
+    if (!displayedSelectionRef.current) return
     Object.entries(groupColours).forEach(([groupName, colour]) => {
-      const group = modelOptionsRef.current![labelForPart][labelForOption][groupName]
+      const group = displayedSelectionRef.current![labelForPart][labelForOption][groupName]
       if (!group) return 
       group.forEach(child => {
         child.material.color.setStyle(colour)
@@ -23,7 +23,7 @@ export const ColourSelect = ({ labelForPart, labelForOption, groups }: ColourSel
     if (!groups) return
     
     changeColour()
-  }, [groupColours, modelOptionsRef])
+  }, [groupColours, displayedSelectionRef])
 
   return (
     <div className="colour-select">
