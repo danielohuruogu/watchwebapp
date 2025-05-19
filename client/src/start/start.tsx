@@ -8,7 +8,7 @@ import { Config } from '../ui/config'
 function Start () {
   const sceneContainer = useRef<HTMLDivElement>(null)
 
-  const { sceneRef, rendererRef, cameraRef, loadedFiles, setLoadedFiles, loadModelsIntoScene } = useThree()
+  const { sceneRef, rendererRef, cameraRef, loadedFiles, setLoadedFiles, loadModelsIntoScene, refsInitialised } = useThree()
   const { initScene } = useInitScene(sceneContainer)
   const { loadFile } = useLoader()
   const { animate } = useAnimate()
@@ -23,7 +23,7 @@ function Start () {
     const handleResize = () => {
       if (cameraRef.current && rendererRef.current) {
         cameraRef.current.updateProjectionMatrix();
-        rendererRef.current.setSize(window.innerWidth/2, window.innerHeight/2);
+        // rendererRef.current.setSize(window.innerWidth/2, window.innerHeight/2);
       }
     }
 
@@ -47,24 +47,23 @@ function Start () {
   }, [initScene, animate, sceneRef, rendererRef, cameraRef])
 
   useEffect(() => {
-    console.log('loadedFiles: ', loadedFiles)
-    if (!loadedFiles) {
-      // files ain't loaded yet - load them
-      console.log('loading files')
-      loadFile()
-        .then(() => {
-          console.log('files loaded')
-          setLoadedFiles(true)
-        })
-    }
+    if (loadedFiles) return
+    // files ain't loaded yet - load them
+    loadFile()
+      .then(() => {
+        console.log('files loaded')
+        setLoadedFiles(true)
+      })
   }, [loadedFiles, loadFile, setLoadedFiles])
 
   useEffect(() => {
-    if (loadedFiles) {
-      console.log('files are already loaded - load models into scene')
-      loadModelsIntoScene()
-    }
-  }, [loadedFiles, loadModelsIntoScene])
+    console.log('loadedFiles: ', loadedFiles)
+    console.log('refsInitialised: ', refsInitialised)
+    if (!loadedFiles || !refsInitialised) return
+
+    console.log('files now loaded + refs initialised - adding models to scene')
+    loadModelsIntoScene()
+  }, [loadedFiles, refsInitialised, loadModelsIntoScene])
 
   return (
     <div className='start-container'>

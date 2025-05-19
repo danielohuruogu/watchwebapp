@@ -13,19 +13,17 @@ export function useInitScene(ref: React.RefObject<HTMLDivElement | null>) {
 
     const scene = new Three.Scene()
     scene.background = new Three.Color(0xeeeeee)
-    scene.add(new Three.AxesHelper(100))
-    scene.add(new Three.GridHelper(100, 100))
     scene.add(new Three.AmbientLight(0x404040, 2))
     sceneRef.current = scene
 
     const camera = new Three.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
-    camera.position.z = 5
+    camera.position.z = 8
     cameraRef.current = camera
 
     scene.add(camera)
 
     const renderer = new Three.WebGLRenderer()
-    renderer.setSize(window.innerWidth/2, window.innerHeight/2)
+    renderer.setSize(800, 600)
     rendererRef.current = renderer
 
     ref.current.appendChild(renderer.domElement)

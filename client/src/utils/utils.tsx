@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useRef, useState } from 'react'
+import React, { createContext, useCallback, useEffect, useRef, useState } from 'react'
 import * as Three from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 
@@ -6,10 +6,11 @@ export const AppContext = createContext<{
   sceneRef: React.RefObject<Three.Scene | null>
   cameraRef: React.RefObject<Three.PerspectiveCamera | null>
   rendererRef: React.RefObject<Three.WebGLRenderer | null>
-  modelOptionsRef: React.RefObject<models | null>
-  defaultModelRef: React.RefObject<defaultConfigDigital | defaultConfigAnalogue | null>
-  displayedSelectionRef: React.RefObject<models | null>
+  modelOptionsRef: React.RefObject<models>
+  defaultModelRef: React.RefObject<defaultConfigDigital | defaultConfigAnalogue>
+  displayedSelectionRef: React.RefObject<models>
   orbitControlsRef: React.RefObject<OrbitControls | null>
+  refsInitialised: boolean
   loadedFiles: boolean
   setLoadedFiles: React.Dispatch<React.SetStateAction<boolean>>
   loadModelsIntoScene: () => void
@@ -23,19 +24,36 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const orbitControlsRef = useRef<OrbitControls | null>(null)
 
   // refs + containers for the models
-  const modelOptionsRef = useRef<models | null>(null)
-  const displayedSelectionRef = useRef<models>(null)
-  const defaultModelRef = useRef<defaultConfigDigital | defaultConfigAnalogue | null>(null)
+  const modelOptionsRef = useRef<models>({})
+  const displayedSelectionRef = useRef<models>({})
+  const defaultModelRef = useRef<defaultConfigDigital | defaultConfigAnalogue>({})
 
   // state for loadedFile
   const [loadedFiles, setLoadedFiles] = useState<boolean>(false)
+  const [refsInitialised, setRefsInitialised] = useState<boolean>(false)
+
+  // check to make sure refs are initialised first
+  useEffect(() => {
+    if (
+      sceneRef.current &&
+      cameraRef.current &&
+      rendererRef.current &&
+      orbitControlsRef.current &&
+      modelOptionsRef.current &&
+      displayedSelectionRef.current &&
+      defaultModelRef.current
+    ) {
+      setRefsInitialised(true)
+    } else {
+      setRefsInitialised(false)
+    }
+  }, [sceneRef, cameraRef, rendererRef, orbitControlsRef, modelOptionsRef, displayedSelectionRef, defaultModelRef])
 
   const loadModelsIntoScene = useCallback(() => {
-    if (!modelOptionsRef.current) {
-      console.error('modelsRef.current is not initialized or empty')
+    if (!refsInitialised) {
+      console.error('Refs are not yet initialised')
       return
     }
-
     // to begin with I want to select the model options that correspond to one of the default configs outlined
     const digitalConfig: defaultConfigDigital = {
       housing: 'button',
@@ -60,42 +78,26 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       defaultModelRef.current = analogueConfig
     }
 
-    // need to properly load in the models here
-    if (defaultModelRef.current) {
-      // go through the current and add them to the scene
-      Object.entries(defaultModelRef.current).forEach(([partType, option]) => { // example would be strap, cotton
-        const selectedModelPart = modelOptionsRef.current![partType][option]
-        if (!selectedModelPart) {
-          console.error(`No model part found for ${selectedModelPart}`)
-          return
-        }
-        if (!displayedSelectionRef.current) {
-          console.error('displayedSelectionRef.current is not initialized')
-          return
-        }
-        // add the current selection to the displayedSelectionRef, for later use
-        displayedSelectionRef.current = {
-          ...displayedSelectionRef.current,
-          [partType]: {
-            ...(displayedSelectionRef.current?.[partType] || {}),
-            [option]: selectedModelPart
-          }
-        }
+    // go through the current and add them to the scene
+    Object.entries(defaultModelRef.current).forEach(([partType, option]) => { // example would be strap, cotton
+      const selectedModelPart = modelOptionsRef.current![partType][option]
+      if (!selectedModelPart) {
+        console.log(`No model part found for ${selectedModelPart}`)
+        return
+      }
 
-        // find the children and add it to the scene
-        Object.values(selectedModelPart).forEach((group) => {
-          group.forEach((child) => {
-            if (sceneRef.current) {
-              sceneRef.current.add(child)
-            } else {
-              console.error('sceneRef.current is not yet initialized')
-            }
-          })
-        })
-      })
-      console.log('models added to scene')
-    }
-  }, [modelOptionsRef, sceneRef, defaultModelRef])
+      // add the current selection to the displayedSelectionRef, for later use
+      displayedSelectionRef.current = {
+        ...displayedSelectionRef.current,
+        [partType]: {
+          ...(displayedSelectionRef.current?.[partType] || {}),
+          [option]: selectedModelPart
+        }
+      }
+    })
+    console.log('models added to scene')
+    
+  }, [refsInitialised, modelOptionsRef, sceneRef, defaultModelRef, displayedSelectionRef])
 
   return (
     <AppContext.Provider value={{
@@ -106,6 +108,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       defaultModelRef,
       displayedSelectionRef,
       orbitControlsRef,
+      refsInitialised,
       loadedFiles,
       setLoadedFiles,
       loadModelsIntoScene,

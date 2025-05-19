@@ -8,10 +8,6 @@ import * as Three from 'three'
 * @param <models> currentSelectionRef - reference to the current selection
 * */
 export const toggleVisibility = (scene: Three.Scene, currentSelectionContainer: models) => {
-  console.log('toggling visibility')
-  console.log(currentSelectionContainer)
-  console.log(scene)
-
   // whatever is in the current selection, set the visibility of the model options to false
   // go through the scene and remove all model children
 
@@ -26,25 +22,28 @@ export const toggleVisibility = (scene: Three.Scene, currentSelectionContainer: 
   }
 
   // remove all the children from the scene
+  const childrenToRemove: Three.Object3D[] = []
   scene.traverse((child) => {
+    // check if the child is a mesh
+    if (child.isObject3D && child.type === 'Mesh') {
+      childrenToRemove.push(child)
+    }
+  })
+
+  childrenToRemove.forEach((child) => {
     scene.remove(child)
-    console.log('removing child: ', child)
   })
 
   // go through the current selection and add the children to the scene
-  const partsOfWatch = Object.keys(currentSelectionContainer) // should be ['face', 'housing', 'strap', 'casing']
-  Object.entries(partsOfWatch).forEach(([partType, option]) => { // example would be strap, cotton
-    console.log('partType: ', partType)
-    console.log('option: ', option)
-    const selectedModelPart = currentSelectionContainer[partType][option]
-    console.log('selectedModelPart: ', selectedModelPart)
+  Object.entries(currentSelectionContainer).forEach(([partType, option]) => { // example would be strap, cotton
+    const optionName = Object.keys(option)[0]
+    const selectedModelPart = currentSelectionContainer[partType][optionName]
     if (!selectedModelPart) {
       console.error(`No model part found for ${selectedModelPart}`)
       return
     }
     // modelPart could be cotton strap - add all the children to the scene
     Object.values(selectedModelPart).forEach((group) => {
-      console.log('group: ', group)
       if (!scene) {
         console.error('sceneRef.current is not set')
         return
@@ -53,6 +52,5 @@ export const toggleVisibility = (scene: Three.Scene, currentSelectionContainer: 
         scene.add(child)
       })
     })
-    console.log('models added to scene')
   })
 }
