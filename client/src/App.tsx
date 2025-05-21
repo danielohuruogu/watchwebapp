@@ -1,13 +1,17 @@
+// importing CSS files
 import './App.css'
+import './styles/components.css'
+import './styles/layout.css'
+
+// importing components
 import Start from './start/start'
-import Header from './ui/header'
+import Config from './ui/config'
 
 function App() {
-
   return (
-    <div>
-      < Header />
-      < Start />
+    <div className='container'>
+      <Start />
+      <Config />
     </div>
   )
 }

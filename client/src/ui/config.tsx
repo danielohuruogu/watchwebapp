@@ -5,7 +5,7 @@ import { useThree } from '../hooks/three'
 import { Loading } from '../components/loading'
 import { toggleVisibility } from '../utils/toggleVisibility'
 
-export const Config = () => {
+export default function Config() {
   const [loading, setLoading] = useState(true)
   // options state to keep track of all the current selections for each part
   // will end up looking like { strap: 'cotton', casing: 'button', face: 'standard', housing: 'standard' }
@@ -20,7 +20,6 @@ export const Config = () => {
   // useEffect to toggle the visibility of the model options
   useEffect(() => {
     if (!displayedSelectionRef.current || !sceneRef.current || !modelOptionsRef.current) return
-    console.log('displayedSelectionRef: ', displayedSelectionRef.current)
 
     if (Object.keys(currentSelection).length > 0) {
       displayedSelectionRef.current = {}
@@ -44,7 +43,6 @@ export const Config = () => {
 
   // useEffect to initialise the choices
   useEffect(() => {
-    console.log('modelOptionsRef: ', modelOptionsRef.current)
     if (!loadedFiles) {
       // TODO
       console.log('will figure out how to handle this later')
@@ -68,40 +66,54 @@ export const Config = () => {
         {loading ?
           <Loading />
           : 
-          (possibleOptionsRef.current && modelOptionsRef.current) && possibleOptionsRef.current.map(part => {
-            const choices: string[] = []
-            Object.keys(modelOptionsRef.current![part] as partOptions).forEach((choiceName) => {
-              choices.push(choiceName)
-            })
+          (
+            <div className="optionSelect-container">
+              <div className="optionSelect-header">
+                <h2>Choose your options</h2>
+              </div>
+              {(possibleOptionsRef.current && modelOptionsRef.current) && possibleOptionsRef.current.map(part => {
+                const choices: string[] = []
+                Object.keys(modelOptionsRef.current![part] as partOptions).forEach((choiceName) => {
+                  choices.push(choiceName)
+                })
       
-            return (
-              <OptionSelect
-                key={part} // e.g. strap, casing, face, housing
-                label={part} // e.g. strap, casing, face, housing
-                choices={choices} // e.g. for strap, ['cotton', 'rubber']; for housing, ['button', 'standard']
-                setCurrentSelection={setCurrentSelection}
-              />
-            )
-        })}
+                return (
+                  <OptionSelect
+                    key={part} // e.g. strap, casing, face, housing
+                    label={part} // e.g. strap, casing, face, housing
+                    choices={choices} // e.g. for strap, ['cotton', 'rubber']; for housing, ['button', 'standard']
+                    setCurrentSelection={setCurrentSelection}
+                  />
+                )
+              })}
+            </div>
+          )}
       </div>
       <div className="colourSelect-area">
         {loading ? 
           <Loading />
           : 
-          currentSelection && Object.entries(currentSelection).map(([part, option]) => {
-            // get the groups for the selected option
-            const groups = modelOptionsRef.current![part][option]
-            
-            return (
-              <ColourSelect
-                key={`${part}.${option}`} // e.g. strap, casing, face, housing
-                labelForPart={part}
-                labelForOption={option}
-                groups={groups}
-              />
-            )
-          }
-        )}
+          (
+            <div className="colourSelect-container">
+              <div className="colourSelect-header">
+                <h2>Choose your colours</h2>
+              </div>
+              {currentSelection && Object.entries(currentSelection).map(([part, option]) => {
+                // get the groups for the selected option
+                const groups = modelOptionsRef.current![part][option]
+                
+                return (
+                  <ColourSelect
+                    key={`${part}.${option}`} // e.g. strap, casing, face, housing
+                    labelForPart={part}
+                    labelForOption={option}
+                    groups={groups}
+                  />
+                )
+              })}
+            </div>
+          )
+        }
       </div>
     </div>
   )

@@ -27,26 +27,32 @@ export const ColourSelect = ({ labelForPart, labelForOption, groups }: ColourSel
 
   return (
     <div className="colour-select">
-      <label className="colour-select-label">
-        {labelForPart && labelForPart.charAt(0).toUpperCase() + labelForPart.slice(1)}
+      <label>
+        {labelForOption && labelForOption.charAt(0).toUpperCase() + labelForOption.slice(1)}
       </label>
-      {labelForOption}
-      {groups && Object.entries(groups).map(([groupName, groupChildren]) => {
-        return (
-          <div
-            key={`${labelForPart}.${labelForOption}.${groupName}`}
-          >
-            <label className="colour-select-label">
-              {groupName.charAt(0).toUpperCase() + groupName.slice(1)}
-            </label>
-            <ColourPicker
-              groupName={groupName}
-              objectColour={groupChildren[0].material.color.getStyle()}
-              setObjectColour={setGroupColours}
-            />
-          </div>
-        )
-      })}
+      <div className="colour-select-container">
+        {groups && Object.entries(groups).map(([groupName, groupChildren]) => {
+          return (
+            <div
+              key={`${labelForPart}.${labelForOption}.${groupName}`}
+              className="colour-select-group"
+            >
+              <label className="colour-select-label">
+                {groupName
+                  .split('_')
+                  .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                  .join(' ')
+                }
+              </label>
+              <ColourPicker
+                groupName={groupName}
+                objectColour={groupChildren[0].material.color.getStyle()}
+                setObjectColour={setGroupColours}
+              />
+            </div>
+          )
+        })}
+      </div>
     </div>
   )
 }

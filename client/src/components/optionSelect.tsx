@@ -63,19 +63,19 @@ export const OptionSelect = ({ label, choices, setCurrentSelection }: OptionSele
     <div className="option-select">
       <label className="option-select-label">{label.charAt(0).toUpperCase() + label.slice(1)}</label>
       <div className="option-select-box">
-        <button
-          className="a" 
+        <a
+          className="arrow-button" 
           onClick={handleCycleDown}
           >
           {'<-'}
-        </button>
-        <input type="text" className="button" value={boxValue !== '' ? boxValue.charAt(0).toUpperCase() + boxValue.slice(1) : ''} readOnly />
-        <button
-          className="a"
+        </a>
+        <div className="option-select-value">{boxValue !== '' ? boxValue.charAt(0).toUpperCase() + boxValue.slice(1) : ''}</div>
+        <a
+          className="arrow-button"
           onClick={handleCycleUp}
           >
           {'->'}
-        </button>
+        </a>
       </div>
     </div>
   )

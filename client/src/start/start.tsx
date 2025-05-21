@@ -3,7 +3,8 @@ import { useThree } from '../hooks/three'
 import { useInitScene } from '../hooks/initScene'
 import { useLoader } from '../hooks/loader'
 import { useAnimate } from '../hooks/animate'
-import { Config } from '../ui/config'
+
+import Header from '../ui/header'
 
 function Start () {
   const sceneContainer = useRef<HTMLDivElement>(null)
@@ -57,8 +58,6 @@ function Start () {
   }, [loadedFiles, loadFile, setLoadedFiles])
 
   useEffect(() => {
-    console.log('loadedFiles: ', loadedFiles)
-    console.log('refsInitialised: ', refsInitialised)
     if (!loadedFiles || !refsInitialised) return
 
     console.log('files now loaded + refs initialised - adding models to scene')
@@ -67,10 +66,8 @@ function Start () {
 
   return (
     <div className='start-container'>
+      < Header />
       <div ref={sceneContainer} className="scene-container" />
-      <div className="gui-container">
-        <Config />
-      </div>
     </div>
   )
 }
