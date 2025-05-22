@@ -7,6 +7,25 @@ export const ColourSelect = ({ labelForPart, labelForOption, groups }: ColourSel
   
   // colours for all groups will be kept in a state
   const [groupColours, setGroupColours] = useState<currentSelection>({})
+  
+  // to handle pagination
+  const itemsPerPage = 4
+  const [currentPage, setCurrentPage] = useState(1)
+
+  const groupEntries = Object.entries(groups || {})
+  const totalPages = Math.ceil(groupEntries.length / itemsPerPage)
+
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
+  const visibleGroups = groupEntries.slice(startIndex, endIndex)
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1)setCurrentPage((prevPage) => Math.max(prevPage - 1, 1))
+  }
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) setCurrentPage((prevPage) => Math.min(prevPage + 1, totalPages))
+  }
 
   const changeColour = () => {
     if (!displayedSelectionRef.current) return
@@ -31,8 +50,7 @@ export const ColourSelect = ({ labelForPart, labelForOption, groups }: ColourSel
         {labelForOption && labelForOption.charAt(0).toUpperCase() + labelForOption.slice(1)}
       </label>
       <div className="colour-select-container">
-        {groups && Object.entries(groups).map(([groupName, groupChildren]) => {
-          return (
+        {visibleGroups.map(([groupName, groupChildren]) => (
             <div
               key={`${labelForPart}.${labelForOption}.${groupName}`}
               className="colour-select-group"
@@ -51,8 +69,15 @@ export const ColourSelect = ({ labelForPart, labelForOption, groups }: ColourSel
               />
             </div>
           )
-        })}
+        )}
       </div>
+      {totalPages > 1 && (
+        <div className="pagination-controls">
+          <button onClick={handlePreviousPage} disabled={currentPage === 1}>Previous</button>
+          <span>{currentPage} of {totalPages}</span>
+          <button onClick={handleNextPage} disabled={currentPage === totalPages}>Next</button>
+        </div>
+      )}
     </div>
   )
 }
