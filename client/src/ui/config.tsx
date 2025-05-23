@@ -71,21 +71,23 @@ export default function Config() {
               <div className="optionSelect-header">
                 <h2>Choose your options</h2>
               </div>
-              {(possibleOptionsRef.current && modelOptionsRef.current) && possibleOptionsRef.current.map(part => {
-                const choices: string[] = []
-                Object.keys(modelOptionsRef.current![part] as partOptions).forEach((choiceName) => {
-                  choices.push(choiceName)
-                })
-      
-                return (
-                  <OptionSelect
-                    key={part} // e.g. strap, casing, face, housing
-                    label={part} // e.g. strap, casing, face, housing
-                    choices={choices} // e.g. for strap, ['cotton', 'rubber']; for housing, ['button', 'standard']
-                    setCurrentSelection={setCurrentSelection}
-                  />
-                )
-              })}
+              <div className='optionSelect-items'>
+                {(possibleOptionsRef.current && modelOptionsRef.current) && possibleOptionsRef.current.map(part => {
+                  const choices: string[] = []
+                  Object.keys(modelOptionsRef.current![part] as partOptions).forEach((choiceName) => {
+                    choices.push(choiceName)
+                  })
+        
+                  return (
+                    <OptionSelect
+                      key={part} // e.g. strap, casing, face, housing
+                      label={part} // e.g. strap, casing, face, housing
+                      choices={choices} // e.g. for strap, ['cotton', 'rubber']; for housing, ['button', 'standard']
+                      setCurrentSelection={setCurrentSelection}
+                    />
+                  )
+                })}
+              </div>
             </div>
           )}
       </div>

@@ -9,7 +9,7 @@ import Config from './ui/config'
 
 function App() {
   return (
-    <div className='container'>
+    <div className='main-container'>
       <Start />
       <Config />
     </div>

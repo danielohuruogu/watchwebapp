@@ -67,14 +67,14 @@ export const OptionSelect = ({ label, choices, setCurrentSelection }: OptionSele
           className="arrow-button" 
           onClick={handleCycleDown}
           >
-          {'<-'}
+          {'<'}
         </a>
         <div className="option-select-value">{boxValue !== '' ? boxValue.charAt(0).toUpperCase() + boxValue.slice(1) : ''}</div>
         <a
           className="arrow-button"
           onClick={handleCycleUp}
           >
-          {'->'}
+          {'>'}
         </a>
       </div>
     </div>

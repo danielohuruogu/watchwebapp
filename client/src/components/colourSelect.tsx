@@ -73,9 +73,9 @@ export const ColourSelect = ({ labelForPart, labelForOption, groups }: ColourSel
       </div>
       {totalPages > 1 && (
         <div className="pagination-controls">
-          <button onClick={handlePreviousPage} disabled={currentPage === 1}>Previous</button>
-          <span>{currentPage} of {totalPages}</span>
-          <button onClick={handleNextPage} disabled={currentPage === totalPages}>Next</button>
+          <button onClick={handlePreviousPage} disabled={currentPage === 1}>{'<'}</button>
+          <span>{currentPage}/{totalPages}</span>
+          <button onClick={handleNextPage} disabled={currentPage === totalPages}>{'>'}</button>
         </div>
       )}
     </div>
