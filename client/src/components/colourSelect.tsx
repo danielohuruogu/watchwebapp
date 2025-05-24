@@ -2,29 +2,49 @@ import { useState, useEffect } from 'react'
 import ColourPicker from './colourPicker'
 import { useThree } from '../hooks/three'
 
-export const ColourSelect = ({ labelForPart, labelForOption, groups }: ColourSelectProps) => {
+export const ColourSelect = ({ labelForPart, labelForOption, groups, optionTransitionClass }: ColourSelectProps) => {
   const { displayedSelectionRef } = useThree()
   
   // colours for all groups will be kept in a state
   const [groupColours, setGroupColours] = useState<currentSelection>({})
   
   // to handle pagination
-  const itemsPerPage = 4
+  const itemsPerPage = 10
   const [currentPage, setCurrentPage] = useState(1)
+  const [transitionClass, setTransitionClass] = useState('fade-in')
 
   const groupEntries = Object.entries(groups || {})
-  const totalPages = Math.ceil(groupEntries.length / itemsPerPage)
+
+  let isPaginationNeeded = false
+  let totalPages = 1
+
+  if (groupEntries.length > itemsPerPage) {
+    isPaginationNeeded = true
+    totalPages = Math.ceil(groupEntries.length / itemsPerPage)
+  }
 
   const startIndex = (currentPage - 1) * itemsPerPage
   const endIndex = startIndex + itemsPerPage
   const visibleGroups = groupEntries.slice(startIndex, endIndex)
 
-  const handlePreviousPage = () => {
-    if (currentPage > 1)setCurrentPage((prevPage) => Math.max(prevPage - 1, 1))
+  const placeholders = Array(itemsPerPage - visibleGroups.length).fill(null)
+
+  const handlePageChange = (page: number) => {
+    setTransitionClass('fade-out')
+    setTimeout(() => {
+      setCurrentPage(page)
+      setTransitionClass('fade-in')
+    }, 200)
   }
 
-  const handleNextPage = () => {
-    if (currentPage < totalPages) setCurrentPage((prevPage) => Math.min(prevPage + 1, totalPages))
+  const cyclePreviousPage = () => {
+    const newPage = currentPage > 1 ? currentPage - 1 : totalPages
+    handlePageChange(newPage)
+  }
+
+  const cycleNextPage = () => {
+    const newPage = currentPage < totalPages ? currentPage + 1 : 1
+    handlePageChange(newPage)
   }
 
   const changeColour = () => {
@@ -45,11 +65,19 @@ export const ColourSelect = ({ labelForPart, labelForOption, groups }: ColourSel
   }, [groupColours, displayedSelectionRef])
 
   return (
-    <div className="colour-select">
-      <label>
-        {labelForOption && labelForOption.charAt(0).toUpperCase() + labelForOption.slice(1)}
-      </label>
-      <div className="colour-select-container">
+    <div className={`colour-select ${optionTransitionClass}`}>
+      <div className='colour-select-header'>
+        <span className='span-1'>
+          {labelForPart && labelForPart.charAt(0).toUpperCase() + labelForPart.slice(1)}    
+        </span>
+        &nbsp;&nbsp;
+        <span className='span-2'>
+          {labelForOption && labelForOption.charAt(0).toUpperCase() + labelForOption.slice(1)}
+        </span>
+      </div>
+      <div
+        className={`colour-select-container ${transitionClass}`}
+      >
         {visibleGroups.map(([groupName, groupChildren]) => (
             <div
               key={`${labelForPart}.${labelForOption}.${groupName}`}
@@ -70,14 +98,19 @@ export const ColourSelect = ({ labelForPart, labelForOption, groups }: ColourSel
             </div>
           )
         )}
+        {isPaginationNeeded && placeholders.map((_, index) => (
+          <div key={`placeholder-${index}`} className="colour-select-placeholder"></div>
+        ))}
       </div>
-      {totalPages > 1 && (
-        <div className="pagination-controls">
-          <button onClick={handlePreviousPage} disabled={currentPage === 1}>{'<'}</button>
-          <span>{currentPage}/{totalPages}</span>
-          <button onClick={handleNextPage} disabled={currentPage === totalPages}>{'>'}</button>
-        </div>
-      )}
+      {isPaginationNeeded && (
+          <div className="pagination-controls">
+            <button onClick={cyclePreviousPage}>{'<'}</button>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <span>{currentPage}/{totalPages}</span>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <button onClick={cycleNextPage}>{'>'}</button>
+          </div>
+        )}
     </div>
   )
 }

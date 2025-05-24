@@ -11,6 +11,9 @@ export default function Config() {
   // will end up looking like { strap: 'cotton', casing: 'button', face: 'standard', housing: 'standard' }
   const [currentSelection, setCurrentSelection] = useState<currentSelection>({})
 
+  // for transitions
+  const [groupTransitionClasses, setGroupTransitionClasses] = useState<Record<string, string>>({})
+
   // getting the refs from the useThree hook
   const { sceneRef, loadedFiles, modelOptionsRef, displayedSelectionRef } = useThree()
 
@@ -69,7 +72,7 @@ export default function Config() {
           (
             <div className="optionSelect-container">
               <div className="optionSelect-header">
-                <h2>Choose your options</h2>
+                <h2>Options</h2>
               </div>
               <div className='optionSelect-items'>
                 {(possibleOptionsRef.current && modelOptionsRef.current) && possibleOptionsRef.current.map(part => {
@@ -84,6 +87,7 @@ export default function Config() {
                       label={part} // e.g. strap, casing, face, housing
                       choices={choices} // e.g. for strap, ['cotton', 'rubber']; for housing, ['button', 'standard']
                       setCurrentSelection={setCurrentSelection}
+                      setGroupTransitionClasses={setGroupTransitionClasses}
                     />
                   )
                 })}
@@ -98,7 +102,7 @@ export default function Config() {
           (
             <div className="colourSelect-container">
               <div className="colourSelect-header">
-                <h2>Choose your colours</h2>
+                <h2>Choose your style</h2>
               </div>
               {currentSelection && Object.entries(currentSelection).map(([part, option]) => {
                 // get the groups for the selected option
@@ -110,6 +114,7 @@ export default function Config() {
                     labelForPart={part}
                     labelForOption={option}
                     groups={groups}
+                    optionTransitionClass={groupTransitionClasses[`${part}.${option}`] || 'fade-in'}
                   />
                 )
               })}

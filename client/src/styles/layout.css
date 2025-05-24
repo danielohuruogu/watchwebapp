@@ -31,6 +31,8 @@
     align-items: center;
     justify-content: center;
     height: 100%;
+    min-width: 35%;
+    border-left: #ccc solid 1px;
 }
 
 .optionSelect-area {
@@ -67,10 +69,14 @@
 
 .colourSelect-area {
     max-height: 60%;
+    width: 100%;
     border-top: 1px solid #ccc;
+    margin: 1rem 0;
+    box-sizing: border-box;
 }
 
 .colourSelect-container {
+    width: 100%;
     display: flex;
     flex-direction: column;
 }

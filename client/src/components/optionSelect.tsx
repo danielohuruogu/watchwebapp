@@ -1,34 +1,47 @@
 import { useEffect, useState } from 'react'
 import { useThree } from '../hooks/three'
 
-export const OptionSelect = ({ label, choices, setCurrentSelection }: OptionSelectProps) => {
+export const OptionSelect = ({ label, choices, setCurrentSelection, setGroupTransitionClasses }: OptionSelectProps) => {
   const [optionIndex, setOptionIndex] = useState(0)
   const [boxValue, setBoxValue] = useState<string>('')
+
   const [initialised, setInitialised] = useState(false)
 
   const { defaultModelRef } = useThree()
 
   // UTIL FUNCTIONS
+  const handleOptionChange = (newIndex: number) => {
+    if(!initialised) return
+    const currentOption = choices[optionIndex]
+    const newOption = choices[newIndex]
+
+    setGroupTransitionClasses((prevClasses) => ({
+      ...prevClasses,
+      [`${label}.${currentOption}`]: 'fade-out',
+    }))
+
+    setTimeout(() => {
+      setOptionIndex(newIndex)
+      setBoxValue(newOption)
+      setGroupTransitionClasses((prevClasses) => ({
+        ...prevClasses,
+        [`${label}.${newOption}`]: 'fade-in',
+      }))
+      setCurrentSelection((prevSelection) => ({
+        ...prevSelection,
+        [label]: newOption
+      }))
+    }, 500)
+  }
+
   const handleCycleUp = () => {
-    setOptionIndex((prevIndex) => {
-      const newIndex = prevIndex + 1
-      if (newIndex >= choices.length) {
-        return 0
-      } else {
-        return newIndex
-      }
-    })
+    const newIndex = optionIndex + 1 >= choices.length ? 0 : optionIndex + 1
+    handleOptionChange(newIndex)
   }
 
   const handleCycleDown = () => {
-    setOptionIndex((prevIndex) => {
-      const newIndex = prevIndex - 1
-      if (newIndex < 0) {
-        return choices.length - 1
-      } else {
-        return newIndex
-      }
-    })
+    const newIndex = optionIndex - 1 < 0 ? choices.length - 1 : optionIndex - 1
+    handleOptionChange(newIndex)
   }
 
   // useEffect to set the default value of the select box on initiation
@@ -41,23 +54,16 @@ export const OptionSelect = ({ label, choices, setCurrentSelection }: OptionSele
       ...prevSelection,
       [label]: defaultModelRef.current![label]
     }))
+    setGroupTransitionClasses((prevClasses) => ({
+      ...prevClasses,
+      [`${label}.${defaultModelRef.current[label]}`]: 'fade-in'
+    }))
 
     // set the optionIndex to the index of the default option in the choices array
     const defaultOptionIndex = choices.indexOf(defaultModelRef.current[label])
     setOptionIndex(defaultOptionIndex)
     setInitialised(true)
   }, [defaultModelRef, label])
-
-  // regular useEffect to set the values as the user changes them
-  useEffect(() => {
-    // setting the states based on the index
-    if (!initialised) return
-    setBoxValue(choices[optionIndex])
-    setCurrentSelection((prevSelection) => ({
-      ...prevSelection,
-      [label]: choices[optionIndex]
-    }))
-  }, [optionIndex, initialised])
 
   return (
     <div className="option-select">
