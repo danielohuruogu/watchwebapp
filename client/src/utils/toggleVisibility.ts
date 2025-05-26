@@ -23,10 +23,13 @@ export const toggleVisibility = (scene: Three.Scene, currentSelectionContainer: 
 
   // remove all the children from the scene
   const childrenToRemove: Three.Object3D[] = []
-  scene.traverse((child) => {
+  scene.traverse((child: Three.Object3D) => {
     // check if the child is a mesh
     if (child.isObject3D && child.type === 'Mesh') {
+      const mesh = child as Three.Mesh
+      if (mesh.geometry && (mesh.geometry.type !== 'PlaneGeometry' && mesh.geometry.type !== 'SphereGeometry')) {
       childrenToRemove.push(child)
+      }
     }
   })
 
@@ -49,6 +52,7 @@ export const toggleVisibility = (scene: Three.Scene, currentSelectionContainer: 
         return
       }
       group.forEach((child) => {
+        child.castShadow = true
         scene.add(child)
       })
     })
