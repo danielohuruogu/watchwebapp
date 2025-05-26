@@ -31,14 +31,14 @@ export function useInitScene(ref: React.RefObject<HTMLDivElement | null>) {
     scene.background = new Three.Color().setHSL(0.6, 0, 1)
     scene.fog = new Three.Fog(scene.background, 1, 5000)
 
-    const groundGeo = new Three.PlaneGeometry(10000, 10000)
-    const groundMat = materials.ground
-    const ground = new Three.Mesh(groundGeo, groundMat)
-    ground.position.y = -20
-    ground.rotation.x = - Math.PI / 2;
-    ground.receiveShadow = true
+    // const groundGeo = new Three.PlaneGeometry(10000, 10000)
+    // const groundMat = materials.ground
+    // const ground = new Three.Mesh(groundGeo, groundMat)
+    // ground.position.y = -20
+    // ground.rotation.x = - Math.PI / 2;
+    // ground.receiveShadow = true
 
-    scene.add(ground)
+    // scene.add(ground)
 
     // LIGHTING
     const hemisphericLight = new Three.HemisphereLight(0xddeeff, 0x0f0e0d, 1)
@@ -86,7 +86,14 @@ export function useInitScene(ref: React.RefObject<HTMLDivElement | null>) {
     renderer.shadowMap.type = Three.PCFSoftShadowMap
     renderer.toneMapping = Three.ReinhardToneMapping
 
+    // ORBIT CONTROLS
     const orbitControls = new OrbitControls(camera, renderer.domElement)
+    orbitControls.enableDamping = true
+    orbitControls.dampingFactor = 0.07
+    orbitControls.rotateSpeed = 1.25
+    orbitControls.panSpeed = 1.25
+    orbitControls.screenSpacePanning = true
+    orbitControls.autoRotateSpeed = 5
 
     // SETTING REFS
     hemisphericLightRef.current = hemisphericLight

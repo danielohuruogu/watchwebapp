@@ -33,6 +33,11 @@
     height: 100%;
     min-width: 35%;
     border-left: #ccc solid 1px;
+    transition: all 0.3s ease-in-out;
+}
+
+.config-container.hidden {
+    display: none;
 }
 
 .optionSelect-area {

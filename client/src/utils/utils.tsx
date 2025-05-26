@@ -15,11 +15,14 @@ export const AppContext = createContext<{
   modelOptionsRef: React.RefObject<models>
   defaultModelRef: React.RefObject<defaultConfigDigital | defaultConfigAnalogue>
   displayedSelectionRef: React.RefObject<models>
+  modelSizeRef: React.RefObject<number| null>
   orbitControlsRef: React.RefObject<OrbitControls | null>
   refsInitialised: boolean
   loadedFiles: boolean
   setLoadedFiles: React.Dispatch<React.SetStateAction<boolean>>
   loadModelsIntoScene: () => void
+  displayToggle: boolean
+  setDisplayToggle: React.Dispatch<React.SetStateAction<boolean>>
 } | null>(null)
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -38,27 +41,31 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   // refs + containers for the models
   const modelOptionsRef = useRef<models>({})
   const displayedSelectionRef = useRef<models>({})
+  const modelSizeRef = useRef<number | null>(null)
   const defaultModelRef = useRef<defaultConfigDigital | defaultConfigAnalogue>({})
 
   // state for loadedFile
   const [loadedFiles, setLoadedFiles] = useState<boolean>(false)
   const [refsInitialised, setRefsInitialised] = useState<boolean>(false)
 
+  // state for tracking display toggle
+  const [displayToggle, setDisplayToggle] = useState<boolean>(false)
+
   // check to make sure refs are initialised first
   useEffect(() => {
-    console.log('sceneRef: ', sceneRef.current)
-    console.log('cameraRef: ', cameraRef.current)
-    console.log('cameraOrthographicRef: ', cameraOrthographicRef.current)
-    console.log('cameraPerspectiveRef: ', cameraPerspectiveRef.current)
-    console.log('cameraRigRef: ', cameraRigRef.current)
-    console.log('activeCameraRef: ', activeCameraRef.current)
-    console.log('atmosphericLightRef: ', hemisphericLightRef.current)
-    console.log('bulbLightRef: ', bulbLightRef.current)
-    console.log('rendererRef: ', rendererRef.current)
-    console.log('orbitControlsRef: ', orbitControlsRef.current)
-    console.log('modelOptionsRef: ', modelOptionsRef.current)
-    console.log('displayedSelectionRef: ', displayedSelectionRef.current)
-    console.log('defaultModelRef: ', defaultModelRef.current)
+    // console.log('sceneRef: ', sceneRef.current)
+    // console.log('cameraRef: ', cameraRef.current)
+    // console.log('cameraOrthographicRef: ', cameraOrthographicRef.current)
+    // console.log('cameraPerspectiveRef: ', cameraPerspectiveRef.current)
+    // console.log('cameraRigRef: ', cameraRigRef.current)
+    // console.log('activeCameraRef: ', activeCameraRef.current)
+    // console.log('atmosphericLightRef: ', hemisphericLightRef.current)
+    // console.log('bulbLightRef: ', bulbLightRef.current)
+    // console.log('rendererRef: ', rendererRef.current)
+    // console.log('orbitControlsRef: ', orbitControlsRef.current)
+    // console.log('modelOptionsRef: ', modelOptionsRef.current)
+    // console.log('displayedSelectionRef: ', displayedSelectionRef.current)
+    // console.log('defaultModelRef: ', defaultModelRef.current)
     if (
       sceneRef.current &&
       cameraRef.current &&
@@ -155,11 +162,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       modelOptionsRef,
       defaultModelRef,
       displayedSelectionRef,
+      modelSizeRef,
       orbitControlsRef,
       refsInitialised,
       loadedFiles,
       setLoadedFiles,
       loadModelsIntoScene,
+      displayToggle,
+      setDisplayToggle
     }}>
       {children}
     </AppContext.Provider>

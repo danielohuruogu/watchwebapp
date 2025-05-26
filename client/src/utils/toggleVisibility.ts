@@ -1,4 +1,5 @@
 import * as Three from 'three'
+// import { useThree } from '../hooks/three'
 
 /*
 * function to toggle the visibility of the model options
@@ -10,6 +11,8 @@ import * as Three from 'three'
 export const toggleVisibility = (scene: Three.Scene, currentSelectionContainer: models) => {
   // whatever is in the current selection, set the visibility of the model options to false
   // go through the scene and remove all model children
+
+  // const { modelSizeRef } = useThree()
 
   if (!currentSelectionContainer) {
     console.error('currentSelectionRef.current is not set')

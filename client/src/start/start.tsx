@@ -5,11 +5,24 @@ import { useLoader } from '../hooks/loader'
 import { useAnimate } from '../hooks/animate'
 
 import Header from '../ui/header'
+import Button from '../components/button'
+import ToggleDisplay from '../utils/toggleDisplay'
 
 function Start () {
   const sceneContainer = useRef<HTMLDivElement>(null)
 
-  const { sceneRef, rendererRef, cameraRef, loadedFiles, setLoadedFiles, loadModelsIntoScene, refsInitialised } = useThree()
+  const {
+    sceneRef,
+    rendererRef,
+    cameraRef,
+    loadedFiles,
+    setLoadedFiles,
+    loadModelsIntoScene,
+    refsInitialised,
+    orbitControlsRef,
+    displayToggle,
+    setDisplayToggle
+  } = useThree()
   const { initScene } = useInitScene(sceneContainer)
   const { loadFile } = useLoader()
   const { animate } = useAnimate()
@@ -68,6 +81,17 @@ function Start () {
     <div className='start-container'>
       < Header />
       <div ref={sceneContainer} className="scene-container" />
+      <Button
+        label="Display"
+        onClick={() => {
+          if (!orbitControlsRef.current) {
+            console.error('OrbitControls not initialized')
+            return
+          }
+          ToggleDisplay(orbitControlsRef.current, setDisplayToggle)}
+        }
+        disabled={false} // This can be replaced with a state variable to control the button's enabled/disabled state
+      /> 
     </div>
   )
 }
