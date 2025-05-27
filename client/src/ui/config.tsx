@@ -64,7 +64,7 @@ export default function Config() {
   // maybe another button to say Button or No Button
 
   return (
-    <div className="config-section">
+    <div className="config-container">
       <div className="optionSelect-area">
         {loading ?
           <Loading />

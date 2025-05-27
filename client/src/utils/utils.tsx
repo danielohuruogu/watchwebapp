@@ -69,11 +69,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     if (
       sceneRef.current &&
       cameraRef.current &&
-      // cameraOrthographicRef.current &&
-      // cameraPerspectiveRef.current &&
-      // cameraRigRef.current &&
-      // hemisphericLightRef.current &&
-      // bulbLightRef.current &&
       rendererRef.current &&
       orbitControlsRef.current &&
       modelOptionsRef.current &&

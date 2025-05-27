@@ -6,7 +6,6 @@ import { useAnimate } from '../hooks/animate'
 
 import Header from '../ui/header'
 import Button from '../components/button'
-import ToggleDisplay from '../utils/toggleDisplay'
 
 function Start () {
   const sceneContainer = useRef<HTMLDivElement>(null)
@@ -20,13 +19,11 @@ function Start () {
     loadModelsIntoScene,
     refsInitialised,
     orbitControlsRef,
-    displayToggle,
     setDisplayToggle
   } = useThree()
   const { initScene } = useInitScene(sceneContainer)
   const { loadFile } = useLoader()
   const { animate } = useAnimate()
-
 
   useEffect(() => {
     initScene()
@@ -88,9 +85,13 @@ function Start () {
             console.error('OrbitControls not initialized')
             return
           }
-          ToggleDisplay(orbitControlsRef.current, setDisplayToggle)}
-        }
-        disabled={false} // This can be replaced with a state variable to control the button's enabled/disabled state
+          setDisplayToggle((prevToggle) => {
+            orbitControlsRef.current.autoRotate = !prevToggle
+            orbitControlsRef.current.dampingFactor = 0.07
+            return !prevToggle // toggle the display toggle state
+          }) // toggle the display toggle state
+        }}
+        disabled={false}
       /> 
     </div>
   )

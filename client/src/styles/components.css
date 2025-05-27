@@ -133,7 +133,7 @@
 }
 
 .colour-select-label {
-    align-self: left;
+    align-self: flex-start;
     font-size: small;
 }
 
