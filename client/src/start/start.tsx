@@ -33,8 +33,8 @@ function Start () {
 
     const handleResize = () => {
       if (cameraRef.current && rendererRef.current) {
-        cameraRef.current.updateProjectionMatrix();
-        // rendererRef.current.setSize(window.innerWidth/2, window.innerHeight/2);
+        cameraRef.current.updateProjectionMatrix()
+        rendererRef.current.setSize(window.innerWidth, window.innerHeight)
       }
     }
 
@@ -74,6 +74,13 @@ function Start () {
     loadModelsIntoScene()
   }, [loadedFiles, refsInitialised, loadModelsIntoScene])
 
+  const buttonStyles = {
+    position: 'absolute',
+    top: '20px',
+    left: '20px',
+    zIndex: 1000
+  }  as React.CSSProperties
+
   return (
     <div className='start-container'>
       < Header />
@@ -81,17 +88,15 @@ function Start () {
       <Button
         label="Display"
         onClick={() => {
-          if (!orbitControlsRef.current) {
-            console.error('OrbitControls not initialized')
-            return
-          }
           setDisplayToggle((prevToggle) => {
-            orbitControlsRef.current.autoRotate = !prevToggle
-            orbitControlsRef.current.dampingFactor = 0.07
-            return !prevToggle // toggle the display toggle state
-          }) // toggle the display toggle state
+            if (!orbitControlsRef.current) {
+              console.warn('orbitControlsRef.current is not set')
+              return prevToggle
+            }
+            return !prevToggle
+          })
         }}
-        disabled={false}
+        styles={buttonStyles}
       /> 
     </div>
   )

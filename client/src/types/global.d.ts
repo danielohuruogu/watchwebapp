@@ -30,21 +30,28 @@ interface defaultConfigAnalogue extends currentSelection{
 
 // INTERFACES FOR PROPS
 interface OptionSelectProps {
-  label: string;
-  choices: string[];
-  setCurrentSelection: React.Dispatch<React.SetStateAction<currentSelection>>;
-  setGroupTransitionClasses: React.Dispatch<React.SetStateAction<Record<string, string>>>;
+  label: string,
+  choices: string[],
+  setCurrentSelection: React.Dispatch<React.SetStateAction<currentSelection>>,
+  setGroupTransitionClasses: React.Dispatch<React.SetStateAction<Record<string, string>>>
 }
 
 interface ColourSelectProps {
-  labelForPart: string;
-  labelForOption: string;
-  groups: partGroups;
-  optionTransitionClass: string;
+  labelForPart: string,
+  labelForOption: string,
+  groups: partGroups,
+  optionTransitionClass: string
 }
 
 interface ColourPickerProps {
-  groupName: string;
-  objectColour: string;
-  setObjectColour: React.Dispatch<React.SetStateAction<currentSelection>>;
+  groupName: string,
+  objectColour: string,
+  setObjectColour: React.Dispatch<React.SetStateAction<currentSelection>>
+}
+
+interface ButtonProps {
+  label: string,
+  onClick: () => void,
+  disabled?: boolean,
+  styles? : React.CSSProperties
 }

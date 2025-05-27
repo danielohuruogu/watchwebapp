@@ -5,10 +5,6 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 export const AppContext = createContext<{
   sceneRef: React.RefObject<Three.Scene | null>
   cameraRef: React.RefObject<Three.PerspectiveCamera | null>
-  cameraOrthographicRef: React.RefObject<Three.OrthographicCamera | null>
-  cameraPerspectiveRef: React.RefObject<Three.PerspectiveCamera | null>
-  cameraRigRef: React.RefObject<Three.Group | null>
-  activeCameraRef: React.RefObject<Three.PerspectiveCamera | Three.OrthographicCamera | null>
   hemisphericLightRef: React.RefObject<Three.HemisphereLight | null>
   bulbLightRef: React.RefObject<Three.PointLight | null>
   rendererRef: React.RefObject<Three.WebGLRenderer | null>
@@ -29,10 +25,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   // refs for the scene
   const sceneRef = useRef<Three.Scene | null>(null)
   const cameraRef = useRef<Three.PerspectiveCamera | null>(null)
-  const cameraOrthographicRef = useRef<Three.OrthographicCamera | null>(null)
-  const cameraPerspectiveRef = useRef<Three.PerspectiveCamera | null>(null)
-  const cameraRigRef = useRef<Three.Group | null>(null)
-  const activeCameraRef = useRef<Three.PerspectiveCamera | Three.OrthographicCamera | null>(null)
   const hemisphericLightRef = useRef<Three.HemisphereLight | null>(null)
   const bulbLightRef = useRef<Three.PointLight | null>(null)
   const rendererRef = useRef<Three.WebGLRenderer | null>(null)
@@ -147,10 +139,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     <AppContext.Provider value={{
       sceneRef,
       cameraRef,
-      cameraOrthographicRef,
-      cameraPerspectiveRef,
-      cameraRigRef,
-      activeCameraRef,
       hemisphericLightRef,
       bulbLightRef,
       rendererRef,

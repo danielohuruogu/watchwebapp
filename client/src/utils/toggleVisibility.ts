@@ -1,5 +1,4 @@
 import * as Three from 'three'
-// import { useThree } from '../hooks/three'
 
 /*
 * function to toggle the visibility of the model options

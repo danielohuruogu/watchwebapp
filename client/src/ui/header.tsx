@@ -1,7 +1,7 @@
 
 export const Header = () => {
   return (
-    <div className="">
+    <div className="header-container">
       <h1 className="text-2xl">Model generator</h1>
     </div>
   )

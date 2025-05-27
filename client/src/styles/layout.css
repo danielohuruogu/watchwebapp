@@ -23,6 +23,11 @@
     height: 100%;
 }
 
+.header-container {
+    position: absolute;
+    top: 50px;
+}
+
 /* FOR THE CONFIG AREA */
 
 .config-container {

@@ -1,6 +1,6 @@
-export default function Button({ label, onClick, disabled = false, styles = {} }: { label: string; onClick: () => void; disabled?: boolean }) {
+import { JSX } from "react"
 
-  
+export default function Button({ label, onClick, disabled = false, styles = {} }: ButtonProps): JSX.Element { 
   return (
     <button
       className={`custom-button ${disabled ? 'disabled' : ''}`}
