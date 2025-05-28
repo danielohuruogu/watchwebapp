@@ -125,16 +125,17 @@ export function useInitScene(ref: React.RefObject<HTMLDivElement | null>) {
     console.log('Camera to target vector:', cameraToTarget)
 
     const newTarget = orbitControlsRef.current.target.clone()
-    const newXPosition = newTarget.x + 5
+    const newXPosition = newTarget.x + 3
     newTarget.set(newXPosition, orbitControlsRef.current.target.y, orbitControlsRef.current.target.z)
     console.log('current camera position', cameraRef.current.position)
     console.log('current target position:', orbitControlsRef.current.target)
     console.log('New target position:', newTarget)
-    const newCameraPosition = new Three.Vector3(cameraRef.current.position.x + 5, yPosition, zPosition)
+    const newCameraPosition = new Three.Vector3(cameraRef.current.position.x + 3, yPosition, zPosition)
     console.log('New camera position:', newCameraPosition)
     cameraRef.current.position.set(newCameraPosition.x, newCameraPosition.y, newCameraPosition.z)
     console.log('Camera position after set:', cameraRef.current.position)
     cameraRef.current.lookAt(newTarget)
+    orbitControlsRef.current.target.copy(newTarget)
     orbitControlsRef.current.update()
 
     const newCameraToTarget = new Three.Vector3()
