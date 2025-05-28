@@ -65,7 +65,9 @@ export function useInitScene(ref: React.RefObject<HTMLDivElement | null>) {
 
     // CAMERAS
     const camera = new Three.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
+    const displayCamera = new Three.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
     scene.add(camera)
+    scene.add(displayCamera)
 
     const renderer = new Three.WebGLRenderer()
     renderer.setSize(window.innerWidth, window.innerHeight)
@@ -75,7 +77,8 @@ export function useInitScene(ref: React.RefObject<HTMLDivElement | null>) {
     // renderer.toneMapping = Three.ReinhardToneMapping
 
     // ORBIT CONTROLS
-    const orbitControls = new OrbitControls(camera, renderer.domElement)
+    // the orbit controls are to align with the display camera
+    const orbitControls = new OrbitControls(displayCamera, renderer.domElement)
     orbitControls.enableDamping = true
     orbitControls.dampingFactor = 0.3
     orbitControls.rotateSpeed = 1.25
