@@ -1,7 +1,8 @@
 import * as Three from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { useThree } from './three'
-import { useCallback, useEffect } from 'react'// import materials from '../utils/materials'
+import { useCallback, useEffect } from 'react'
+import { sizes } from '../utils/constants'
 
 export function useInitScene(ref: React.RefObject<HTMLDivElement | null>) {
   const {
@@ -9,26 +10,14 @@ export function useInitScene(ref: React.RefObject<HTMLDivElement | null>) {
     cameraRef,
     // hemisphericLightRef,
     // bulbLightRef,
+    displayLightsRef,
     rendererRef,
     orbitControlsRef,
-    displayToggle
+    autoRotate,
+    displayLights
   } = useThree()
 
-  // const frustumSize = 10
-  // set up the scene, camera, lights and renderer and set them in the refs
-  // const scene = new Three.Scene()
-  // sceneRef.current = scene
-  // const renderer = new Three.WebGLRenderer({ antialias: true })
-  // rendererRef.current = renderer
-  // const camera = new Three.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
-  // cameraRef.current = camera
-  // const hemisphericLight = new Three.HemisphereLight(0xddeeff, 0x0f0e0d, 1)
-  // hemisphericLightRef.current = hemisphericLight
-  // const bulbLight = new Three.PointLight(0xffffff, 1, 100, 2)
-  // bulbLightRef.current = bulbLight
-
-  // const controls = new OrbitControls(camera, renderer.domElement)
-  // orbitControlsRef.current = controls
+  const maxAspectRatio = window.innerWidth / window.innerHeight
 
   const initScene = useCallback(() => {
     if (!ref.current) return
@@ -37,10 +26,18 @@ export function useInitScene(ref: React.RefObject<HTMLDivElement | null>) {
 
     // SCENE SET UP
     const scene = new Three.Scene()
-    scene.background = new Three.Color().setHSL(0.6, 0, 1)
     scene.add(new Three.AxesHelper(100))
-    scene.add(new Three.GridHelper(100, 100))
-    scene.fog = new Three.Fog(scene.background, 1, 5000)
+    scene.add(new Three.GridHelper(1000, 1000))
+
+    const groundGeo = new Three.PlaneGeometry( 10000, 10000 )
+    const groundMat = new Three.MeshLambertMaterial( { color: 0xffffff } )
+    groundMat.color.setHSL( 0.095, 1, 0.75 )
+  
+    const ground = new Three.Mesh(groundGeo, groundMat)
+    ground.position.y = - 20
+    ground.rotation.x = - Math.PI / 2
+    ground.receiveShadow = true
+    scene.add( ground )
 
     // // LIGHTING
     // const hemisphericLight = new Three.HemisphereLight(0xddeeff, 0x0f0e0d, 1)
@@ -60,34 +57,52 @@ export function useInitScene(ref: React.RefObject<HTMLDivElement | null>) {
     // bulbLight.shadow.camera.fov = 90
     // bulbLight.shadow.bias = -0.005
 
+    // for display mode
+    const displayLightingRig = new Three.Group()
+
+    const dirLight1 = new Three.DirectionalLight(0xffffff, 1)
+    dirLight1.position.set(-10, 30, 20)
+
+    const dirLight2 = new Three.DirectionalLight(0xffffff, 1)
+    dirLight2.position.set(0, 30, 20)
+
+    const dirLight3 = new Three.DirectionalLight(0xffffff, 1)
+    dirLight3.position.set(10, 30, 20)
+
+    displayLightingRig.add(dirLight1, dirLight2, dirLight3)
+    displayLightingRig.visible = autoRotate
+
     // scene.add(hemisphericLight)
     // scene.add(bulbLight)
+    scene.add(displayLightingRig)
 
     // CAMERAS
-    const camera = new Three.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
-    const displayCamera = new Three.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
+    const camera = new Three.PerspectiveCamera(75, maxAspectRatio, 0.1, 1000)
     scene.add(camera)
-    scene.add(displayCamera)
 
     const renderer = new Three.WebGLRenderer()
-    renderer.setSize(window.innerWidth, window.innerHeight)
     renderer.setPixelRatio(window.devicePixelRatio)
     // renderer.shadowMap.enabled = true
     // renderer.shadowMap.type = Three.PCFSoftShadowMap
     // renderer.toneMapping = Three.ReinhardToneMapping
 
+    renderer.setSize(sizes.sceneWidth as number, window.innerHeight, false)   
+
     // ORBIT CONTROLS
     // the orbit controls are to align with the display camera
-    const orbitControls = new OrbitControls(displayCamera, renderer.domElement)
+    const orbitControls = new OrbitControls(camera, renderer.domElement)
     orbitControls.enableDamping = true
     orbitControls.dampingFactor = 0.3
     orbitControls.rotateSpeed = 1.25
     orbitControls.panSpeed = 1.25
     orbitControls.autoRotateSpeed = 3
 
+    displayLightingRig.lookAt(orbitControls.target)
+    // // ADDING TO SCENE
     // // SETTING REFS
     // hemisphericLightRef.current = hemisphericLight
     // bulbLightRef.current = bulbLight
+    displayLightsRef.current = displayLightingRig
     cameraRef.current = camera
 
     sceneRef.current = scene
@@ -99,6 +114,7 @@ export function useInitScene(ref: React.RefObject<HTMLDivElement | null>) {
       // bulbLightRef,
       cameraRef,
       // hemisphericLightRef,
+      displayLightsRef,
       orbitControlsRef,
       ref,
       rendererRef,
@@ -115,60 +131,49 @@ export function useInitScene(ref: React.RefObject<HTMLDivElement | null>) {
     const zPosition = 8
     cameraRef.current.position.set(-5, yPosition, zPosition)
 
-    // SETTING THE CAMERA POSITION
-    // console.log('setting the camera position to the target of the orbit controls')
-    // const newTarget = new Three.Vector3(0, 0, 0)
-    // console.log('orbitControlsRef.current.target: ', orbitControlsRef.current.target)
-    // newTarget.copy(orbitControlsRef.current.target)
-    // console.log('newTarget: ', newTarget)
-    // const newXPosition = newTarget.x + 5
-    // console.log('newXPosition: ', newXPosition)
-    const cameraToTarget = new Three.Vector3()
-    cameraToTarget.subVectors(orbitControlsRef.current.target, cameraRef.current.position)
-    console.log('Camera to target vector:', cameraToTarget)
-
-    const newTarget = orbitControlsRef.current.target.clone()
-    const newXPosition = newTarget.x + 3
-    newTarget.set(newXPosition, orbitControlsRef.current.target.y, orbitControlsRef.current.target.z)
-    console.log('current camera position', cameraRef.current.position)
-    console.log('current target position:', orbitControlsRef.current.target)
-    console.log('New target position:', newTarget)
-    const newCameraPosition = new Three.Vector3(cameraRef.current.position.x + 3, yPosition, zPosition)
-    console.log('New camera position:', newCameraPosition)
-    cameraRef.current.position.set(newCameraPosition.x, newCameraPosition.y, newCameraPosition.z)
-    console.log('Camera position after set:', cameraRef.current.position)
-    cameraRef.current.lookAt(newTarget)
-    orbitControlsRef.current.target.copy(newTarget)
-    orbitControlsRef.current.update()
-
-    const newCameraToTarget = new Three.Vector3()
-    newCameraToTarget.subVectors(newTarget, cameraRef.current.position)
-    console.log('new cameraToTarget vector after setting position:', newCameraToTarget)
-
     // set the camera + orbit controls to the scene
   }, [cameraRef, rendererRef, orbitControlsRef, sceneRef])
 
   useEffect(() => {
-      const configContainer = document.querySelector('.config-container')
-    if (!cameraRef.current || !configContainer) {
-      console.warn('Camera or config container not initialized.')
-      return
-    }
-    if (!orbitControlsRef.current) {
-      console.warn('OrbitControls not initialized.')
-      return
-    }
-    if (!configContainer) {
-      console.warn('Config container not found.')
-      return
-    }
+    // grab items to change
+    const screenshotButton = document.querySelector('#screenshot')
 
-    orbitControlsRef.current.autoRotate = displayToggle
-    orbitControlsRef.current.dampingFactor = displayToggle ? 0.1 : 0.3
+    console.log('displayLightsRef: ', displayLightsRef.current)
+    console.log('orbitControlsRef: ', orbitControlsRef.current)
+    console.log('cameraRef: ', cameraRef.current)
+    console.log('sceneRef: ', sceneRef.current)
+    console.log('screenshotButton: ', screenshotButton)
+    if (!cameraRef.current || !sceneRef.current || !screenshotButton || !displayLightsRef.current || !orbitControlsRef.current) {
+      console.warn('Stuff not initialized.')
+      return
+    }
+    // if (!hemisphericLightRef.current || !bulbLightRef.current) {
+    //   console.warn('Hemispheric or bulb light not initialized.')
+    //   return
+    // }
+
+    // update the orbitControls
+    orbitControlsRef.current.autoRotate = autoRotate
+    orbitControlsRef.current.dampingFactor = autoRotate ? 0.1 : 0.3
     orbitControlsRef.current.update()
 
-    configContainer.classList.toggle('hidden', displayToggle)
-  }, [displayToggle])
+    // will have to update the lighting and camera position
+    sceneRef.current.background = new Three.Color().setHSL(0.6, 0, displayLights ? 0.5 : 1)
+
+    screenshotButton.classList.toggle('hidden', autoRotate)
+
+    const fog = new Three.Fog(new Three.Color().setHSL(0.6, 0, 1), 5, 20)
+    if (autoRotate) {
+      sceneRef.current.fog = fog
+      // sceneRef.current.remove(hemisphericLightRef.current!)
+    } else {
+      sceneRef.current.fog = null
+      // sceneRef.current.add(hemisphericLightRef.current!)
+    }
+
+    displayLightsRef.current.visible = displayLights
+    
+  }, [autoRotate, displayLights])
 
   return {
     initScene,

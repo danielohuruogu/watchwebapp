@@ -7,6 +7,7 @@ export const AppContext = createContext<{
   cameraRef: React.RefObject<Three.PerspectiveCamera | null>
   hemisphericLightRef: React.RefObject<Three.HemisphereLight | null>
   bulbLightRef: React.RefObject<Three.PointLight | null>
+  displayLightsRef: React.RefObject<Three.Group | null>
   rendererRef: React.RefObject<Three.WebGLRenderer | null>
   modelOptionsRef: React.RefObject<models>
   defaultModelRef: React.RefObject<defaultConfigDigital | defaultConfigAnalogue>
@@ -17,8 +18,10 @@ export const AppContext = createContext<{
   loadedFiles: boolean
   setLoadedFiles: React.Dispatch<React.SetStateAction<boolean>>
   loadModelsIntoScene: () => void
-  displayToggle: boolean
-  setDisplayToggle: React.Dispatch<React.SetStateAction<boolean>>
+  autoRotate: boolean
+  setAutoRotate: React.Dispatch<React.SetStateAction<boolean>>
+  displayLights: boolean
+  setDisplayLights: React.Dispatch<React.SetStateAction<boolean>>
 } | null>(null)
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -27,6 +30,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const cameraRef = useRef<Three.PerspectiveCamera | null>(null)
   const hemisphericLightRef = useRef<Three.HemisphereLight | null>(null)
   const bulbLightRef = useRef<Three.PointLight | null>(null)
+  const displayLightsRef = useRef<Three.Group | null>(null)
   const rendererRef = useRef<Three.WebGLRenderer | null>(null)
   const orbitControlsRef = useRef<OrbitControls | null>(null)
 
@@ -36,12 +40,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const modelSizeRef = useRef<number | null>(null)
   const defaultModelRef = useRef<defaultConfigDigital | defaultConfigAnalogue>({})
 
-  // state for loadedFile
+  // states for loading states
   const [loadedFiles, setLoadedFiles] = useState<boolean>(false)
   const [refsInitialised, setRefsInitialised] = useState<boolean>(false)
 
-  // state for tracking display toggle
-  const [displayToggle, setDisplayToggle] = useState<boolean>(false)
+  // states for display options
+  const [autoRotate, setAutoRotate] = useState<boolean>(false)
+  const [displayLights, setDisplayLights] = useState<boolean>(false)
 
   // check to make sure refs are initialised first
   useEffect(() => {
@@ -107,20 +112,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     
     // just to see how one gets chosen to begin with
     if (Math.random() > 0.5) {
-      console.log('choosing digital config: ', digitalConfig)
       defaultModelRef.current = digitalConfig
     } else {
-      console.log('choosing analogue config: ', analogueConfig)
       defaultModelRef.current = analogueConfig
     }
 
     // go through the current and add them to the scene
     Object.entries(defaultModelRef.current).forEach(([partType, option]) => { // example would be strap, cotton
       const selectedModelPart = modelOptionsRef.current![partType][option]
-      if (!selectedModelPart) {
-        console.log(`No model part found for ${selectedModelPart}`)
-        return
-      }
+      if (!selectedModelPart) return
 
       // add the current selection to the displayedSelectionRef, for later use
       displayedSelectionRef.current = {
@@ -130,9 +130,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           [option]: selectedModelPart
         }
       }
-    })
-    console.log('models added to scene')
-    
+    })    
   }, [refsInitialised, modelOptionsRef, sceneRef, defaultModelRef, displayedSelectionRef])
 
   return (
@@ -141,6 +139,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       cameraRef,
       hemisphericLightRef,
       bulbLightRef,
+      displayLightsRef,
       rendererRef,
       modelOptionsRef,
       defaultModelRef,
@@ -151,8 +150,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       loadedFiles,
       setLoadedFiles,
       loadModelsIntoScene,
-      displayToggle,
-      setDisplayToggle
+      autoRotate,
+      setAutoRotate,
+      displayLights,
+      setDisplayLights
     }}>
       {children}
     </AppContext.Provider>

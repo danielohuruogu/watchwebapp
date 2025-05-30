@@ -1,7 +1,4 @@
 #root {
-  margin: auto auto;
-  padding: 1rem;
-  text-align: center;
   width: 100%;
 }
 
@@ -21,8 +18,8 @@ body {
   margin: 0;
   display: flex;
   place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  padding: 5px;
+  box-sizing: border-box;
 }
 
 h1 {

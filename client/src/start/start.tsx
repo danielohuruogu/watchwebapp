@@ -6,6 +6,8 @@ import { useAnimate } from '../hooks/animate'
 
 import Header from '../ui/header'
 import Button from '../components/button'
+import downloadScreenshot from '../utils/download'
+import { sizes } from '../utils/constants'
 
 function Start () {
   const sceneContainer = useRef<HTMLDivElement>(null)
@@ -14,13 +16,16 @@ function Start () {
     sceneRef,
     rendererRef,
     cameraRef,
+    displayLightsRef,
     loadedFiles,
     setLoadedFiles,
     loadModelsIntoScene,
     refsInitialised,
     orbitControlsRef,
-    setDisplayToggle
+    setAutoRotate,
+    setDisplayLights
   } = useThree()
+
   const { initScene } = useInitScene(sceneContainer)
   const { loadFile } = useLoader()
   const { animate } = useAnimate()
@@ -33,8 +38,14 @@ function Start () {
 
     const handleResize = () => {
       if (cameraRef.current && rendererRef.current) {
+        cameraRef.current.aspect = window.innerWidth / window.innerHeight
         cameraRef.current.updateProjectionMatrix()
-        rendererRef.current.setSize(window.innerWidth, window.innerHeight)
+        // set the renderer size to the new size of its container
+        // if (sceneContainer.current) {
+          // rendererRef.current.setSize(sceneContainer.current.clientWidth, sceneContainer.current.clientHeight)
+        // }
+        rendererRef.current.setSize(sizes.sceneWidth as number, window.innerHeight)
+        orbitControlsRef.current?.update()
       }
     }
 
@@ -74,21 +85,39 @@ function Start () {
     loadModelsIntoScene()
   }, [loadedFiles, refsInitialised, loadModelsIntoScene])
 
-  const buttonStyles = {
+  const defaultStyles = {
     position: 'absolute',
-    top: '20px',
-    left: '20px',
     zIndex: 1000
-  }  as React.CSSProperties
+  }
+
+  const rotateStyles = Object.assign({}, defaultStyles, {
+    top: '200px',
+    left: '20px',
+  })  as React.CSSProperties
+
+  const downloadStyles = Object.assign({}, defaultStyles, {
+    top: '200px',
+    left: '100px',
+  }) as React.CSSProperties
+
+    const resetStyles = Object.assign({}, defaultStyles, {
+    top: '240px',
+    left: '20px',
+  }) as React.CSSProperties
+
+  const lightingStyles = Object.assign({}, defaultStyles, {
+    top: '280px',
+    left: '20px',
+  }) as React.CSSProperties
 
   return (
     <div className='start-container'>
       < Header />
       <div ref={sceneContainer} className="scene-container" />
       <Button
-        label="Display"
+        label="Auto rotate"
         onClick={() => {
-          setDisplayToggle((prevToggle) => {
+          setAutoRotate((prevToggle) => {
             if (!orbitControlsRef.current) {
               console.warn('orbitControlsRef.current is not set')
               return prevToggle
@@ -96,8 +125,43 @@ function Start () {
             return !prevToggle
           })
         }}
-        styles={buttonStyles}
-      /> 
+        styles={rotateStyles}
+      />
+      <Button
+        label="Reset Camera"
+        onClick={() => {
+          if (!orbitControlsRef.current || !cameraRef.current) return
+          orbitControlsRef.current.reset()
+          cameraRef.current.position.set(-5, 5, 8)
+          cameraRef.current.lookAt(0, 0, 0)
+          orbitControlsRef.current.update()
+        }}
+        styles={resetStyles}
+      />
+      <Button
+        label="Screenshot"
+        onClick={() => {
+          if (!rendererRef.current || !sceneRef.current || !cameraRef.current || !orbitControlsRef.current) {
+            console.warn('Renderer, scene, camera or orbit controls not initialized.')
+            return
+          }
+          downloadScreenshot(rendererRef.current, sceneRef.current, cameraRef.current, orbitControlsRef.current)
+        }}
+        styles={downloadStyles}
+      />
+      <Button 
+        label="Toggle lights"
+        onClick={() => {
+          setDisplayLights((prev) => {
+            if (!displayLightsRef.current) {
+              console.warn('displayLightsRef.current is not set')
+              return prev
+            }
+            return !prev
+          })
+        }}
+        styles={lightingStyles}
+      />
     </div>
   )
 }
