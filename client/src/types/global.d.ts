@@ -50,6 +50,8 @@ interface ColourPickerProps {
 }
 
 interface ButtonProps {
+  id: string,
+  className: string,
   label: string,
   onClick: () => void,
   disabled?: boolean,

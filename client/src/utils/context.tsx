@@ -52,10 +52,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   useEffect(() => {
     // console.log('sceneRef: ', sceneRef.current)
     // console.log('cameraRef: ', cameraRef.current)
-    // console.log('cameraOrthographicRef: ', cameraOrthographicRef.current)
-    // console.log('cameraPerspectiveRef: ', cameraPerspectiveRef.current)
-    // console.log('cameraRigRef: ', cameraRigRef.current)
-    // console.log('activeCameraRef: ', activeCameraRef.current)
     // console.log('atmosphericLightRef: ', hemisphericLightRef.current)
     // console.log('bulbLightRef: ', bulbLightRef.current)
     // console.log('rendererRef: ', rendererRef.current)
@@ -78,9 +74,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   }, [sceneRef,
       cameraRef,
-      // cameraOrthographicRef,
-      // cameraPerspectiveRef,
-      // cameraRigRef,
       // hemisphericLightRef,
       // bulbLightRef,
       rendererRef,

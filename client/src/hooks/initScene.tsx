@@ -1,7 +1,10 @@
 import * as Three from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import { useThree } from './three'
+import gsap from 'gsap'
+
 import { useCallback, useEffect } from 'react'
+
+import { useThree } from './three'
 import { sizes } from '../utils/constants'
 
 export function useInitScene(ref: React.RefObject<HTMLDivElement | null>) {
@@ -18,6 +21,7 @@ export function useInitScene(ref: React.RefObject<HTMLDivElement | null>) {
   } = useThree()
 
   const maxAspectRatio = window.innerWidth / window.innerHeight
+  const backgroundColor = '#F7F7F7'
 
   const initScene = useCallback(() => {
     if (!ref.current) return
@@ -26,7 +30,8 @@ export function useInitScene(ref: React.RefObject<HTMLDivElement | null>) {
 
     // SCENE SET UP
     const scene = new Three.Scene()
-    scene.add(new Three.AxesHelper(100))
+    scene.fog = new Three.Fog('#000000', 5, 20)
+    scene.background = new Three.Color(backgroundColor)
     scene.add(new Three.GridHelper(1000, 1000))
 
     const groundGeo = new Three.PlaneGeometry( 10000, 10000 )
@@ -60,17 +65,23 @@ export function useInitScene(ref: React.RefObject<HTMLDivElement | null>) {
     // for display mode
     const displayLightingRig = new Three.Group()
 
-    const dirLight1 = new Three.DirectionalLight(0xffffff, 1)
-    dirLight1.position.set(-10, 30, 20)
-
-    const dirLight2 = new Three.DirectionalLight(0xffffff, 1)
-    dirLight2.position.set(0, 30, 20)
-
-    const dirLight3 = new Three.DirectionalLight(0xffffff, 1)
-    dirLight3.position.set(10, 30, 20)
-
-    displayLightingRig.add(dirLight1, dirLight2, dirLight3)
-    displayLightingRig.visible = autoRotate
+    for (let i = 0; i < 3; i++) {
+      const dirLight = new Three.DirectionalLight(0xffffff, 1)
+      dirLight.position.set(i * 10 - 10, 30, 20)
+      dirLight.castShadow = true
+      dirLight.shadow.mapSize.width = 4096
+      dirLight.shadow.mapSize.height = 4096
+      dirLight.shadow.radius = 10
+      dirLight.shadow.camera.near = 0.5
+      dirLight.shadow.camera.far = 100
+      dirLight.shadow.bias = -0.005
+      dirLight.shadow.camera.left = -10
+      dirLight.shadow.camera.right = 10
+      dirLight.shadow.camera.top = 10
+      dirLight.shadow.camera.bottom = -10
+      dirLight.shadow.camera.updateProjectionMatrix()
+      displayLightingRig.add(dirLight)
+    }
 
     // scene.add(hemisphericLight)
     // scene.add(bulbLight)
@@ -136,13 +147,8 @@ export function useInitScene(ref: React.RefObject<HTMLDivElement | null>) {
 
   useEffect(() => {
     // grab items to change
-    const screenshotButton = document.querySelector('#screenshot')
+    const screenshotButton = document.querySelector('#screenshot-button')
 
-    console.log('displayLightsRef: ', displayLightsRef.current)
-    console.log('orbitControlsRef: ', orbitControlsRef.current)
-    console.log('cameraRef: ', cameraRef.current)
-    console.log('sceneRef: ', sceneRef.current)
-    console.log('screenshotButton: ', screenshotButton)
     if (!cameraRef.current || !sceneRef.current || !screenshotButton || !displayLightsRef.current || !orbitControlsRef.current) {
       console.warn('Stuff not initialized.')
       return
@@ -157,22 +163,80 @@ export function useInitScene(ref: React.RefObject<HTMLDivElement | null>) {
     orbitControlsRef.current.dampingFactor = autoRotate ? 0.1 : 0.3
     orbitControlsRef.current.update()
 
-    // will have to update the lighting and camera position
-    sceneRef.current.background = new Three.Color().setHSL(0.6, 0, displayLights ? 0.5 : 1)
-
     screenshotButton.classList.toggle('hidden', autoRotate)
 
-    const fog = new Three.Fog(new Three.Color().setHSL(0.6, 0, 1), 5, 20)
-    if (autoRotate) {
-      sceneRef.current.fog = fog
-      // sceneRef.current.remove(hemisphericLightRef.current!)
+    // checking displayLights
+    console.log('checking displayLights')
+    if (displayLights) {
+      // turn the fog and background to a darker color
+      console.log('displayLights is true, turning down the lights.')
+      gsap.to(sceneRef.current.fog, {
+        far: 15,
+        duration: 0.6,
+        ease: 'power2.inOut'
+      })
+      gsap.to(sceneRef.current.background, {
+        r: 0.329,
+        g: 0.329, // #545454
+        b: 0.329, // #545454,
+        duration: 0.6,
+        ease: 'power2.inOut'
+      })
+      // turn down hemispheric + bulb lights
+      // gsap.to(hemisphericLightRef.current, {
+      //   intensity: 0,
+      //   duration: 1,
+      //   ease: 'power2.inOut'
+      // })
+      // gsap.to(bulbLightRef.current, {
+      //   intensity: 0,
+      //   duration: 1,
+      //   ease: 'power2.inOut'
+      // })
     } else {
-      sceneRef.current.fog = null
-      // sceneRef.current.add(hemisphericLightRef.current!)
+      console.log('displayLights is now false, making backgroun brighter.')
+      gsap.to(sceneRef.current.fog, {
+        far: 50,
+        duration: 0.3,
+        ease: 'power2.inOut'
+      })
+      gsap.to(sceneRef.current.background, {
+        r: 247/255,
+        g: 247/255,
+        b: 247/255,
+        duration: 0.3,
+        ease: 'power2.inOut'
+      })
+      //turn up hemispheric + bulb light
+      // gsap.to(hemisphericLightRef.current, {
+      //   intensity: 1,
+      //   duration: 1,
+      //   ease: 'power2.inOut'
+      // })
+      // gsap.to(bulbLightRef.current, {
+      //   intensity: 1,
+      //   duration: 1,
+      //   ease: 'power2.inOut'
+      // })
     }
 
-    displayLightsRef.current.visible = displayLights
-    
+    displayLightsRef.current.children.forEach(light => {
+      if (light instanceof Three.DirectionalLight) {
+        if (displayLights) {
+          gsap.to(light, {
+            intensity: 1,
+            duration: 1,
+            ease: 'power2.inOut',
+          })
+        } else {
+          gsap.to(light, {
+            intensity: 0,
+            duration: 1,
+            ease: 'power2.inOut',
+          })
+        }
+      }
+    })    
   }, [autoRotate, displayLights])
 
   return {

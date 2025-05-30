@@ -6,7 +6,7 @@ import { useAnimate } from '../hooks/animate'
 
 import Header from '../ui/header'
 import Button from '../components/button'
-import downloadScreenshot from '../utils/download'
+import { downloadScreenshot, resetCamera } from '../utils/functions'
 import { sizes } from '../utils/constants'
 
 function Start () {
@@ -22,7 +22,9 @@ function Start () {
     loadModelsIntoScene,
     refsInitialised,
     orbitControlsRef,
+    autoRotate,
     setAutoRotate,
+    displayLights,
     setDisplayLights
   } = useThree()
 
@@ -40,10 +42,6 @@ function Start () {
       if (cameraRef.current && rendererRef.current) {
         cameraRef.current.aspect = window.innerWidth / window.innerHeight
         cameraRef.current.updateProjectionMatrix()
-        // set the renderer size to the new size of its container
-        // if (sceneContainer.current) {
-          // rendererRef.current.setSize(sceneContainer.current.clientWidth, sceneContainer.current.clientHeight)
-        // }
         rendererRef.current.setSize(sizes.sceneWidth as number, window.innerHeight)
         orbitControlsRef.current?.update()
       }
@@ -85,83 +83,61 @@ function Start () {
     loadModelsIntoScene()
   }, [loadedFiles, refsInitialised, loadModelsIntoScene])
 
-  const defaultStyles = {
-    position: 'absolute',
-    zIndex: 1000
-  }
-
-  const rotateStyles = Object.assign({}, defaultStyles, {
-    top: '200px',
-    left: '20px',
-  })  as React.CSSProperties
-
-  const downloadStyles = Object.assign({}, defaultStyles, {
-    top: '200px',
-    left: '100px',
-  }) as React.CSSProperties
-
-    const resetStyles = Object.assign({}, defaultStyles, {
-    top: '240px',
-    left: '20px',
-  }) as React.CSSProperties
-
-  const lightingStyles = Object.assign({}, defaultStyles, {
-    top: '280px',
-    left: '20px',
-  }) as React.CSSProperties
-
   return (
     <div className='start-container'>
       < Header />
+      <div className='controls-container'>
+        <Button
+          id="screenshot-button"
+          className='screenshot'
+          label="Screenshot"
+          onClick={() => {
+            if (!rendererRef.current || !sceneRef.current || !cameraRef.current || !orbitControlsRef.current) {
+              console.warn('Renderer, scene, camera or orbit controls not initialized.')
+              return
+            }
+            downloadScreenshot(rendererRef.current, sceneRef.current, cameraRef.current, orbitControlsRef.current)
+          }}
+        />
+        <Button
+          id="reset-camera-button"
+          className='reset-camera'
+          label="Reset Camera"
+          onClick={() => {
+            if (!orbitControlsRef.current || !cameraRef.current) return
+            resetCamera(orbitControlsRef.current, cameraRef.current)
+          }}
+        />
+        <Button
+          id='auto-rotate-button'
+          className='rotate'
+          label={autoRotate ? 'Auto rotate: ON' : 'Auto rotate: OFF'}
+          onClick={() => {
+            setAutoRotate((prevToggle) => {
+              if (!orbitControlsRef.current) {
+                console.warn('orbitControlsRef.current is not set')
+                return prevToggle
+              }
+              return !prevToggle
+            })
+          }}
+        />
+        <Button
+          id="toggle-lights-button"
+          className='toggle-lights'
+          label={displayLights ? 'Display Lights: ON' : 'Display Lights: OFF'}
+          onClick={() => {
+            setDisplayLights((prev) => {
+              if (!displayLightsRef.current) {
+                console.warn('displayLightsRef.current is not set')
+                return prev
+              }
+              return !prev
+            })
+          }}
+        />
+      </div>
       <div ref={sceneContainer} className="scene-container" />
-      <Button
-        label="Auto rotate"
-        onClick={() => {
-          setAutoRotate((prevToggle) => {
-            if (!orbitControlsRef.current) {
-              console.warn('orbitControlsRef.current is not set')
-              return prevToggle
-            }
-            return !prevToggle
-          })
-        }}
-        styles={rotateStyles}
-      />
-      <Button
-        label="Reset Camera"
-        onClick={() => {
-          if (!orbitControlsRef.current || !cameraRef.current) return
-          orbitControlsRef.current.reset()
-          cameraRef.current.position.set(-5, 5, 8)
-          cameraRef.current.lookAt(0, 0, 0)
-          orbitControlsRef.current.update()
-        }}
-        styles={resetStyles}
-      />
-      <Button
-        label="Screenshot"
-        onClick={() => {
-          if (!rendererRef.current || !sceneRef.current || !cameraRef.current || !orbitControlsRef.current) {
-            console.warn('Renderer, scene, camera or orbit controls not initialized.')
-            return
-          }
-          downloadScreenshot(rendererRef.current, sceneRef.current, cameraRef.current, orbitControlsRef.current)
-        }}
-        styles={downloadStyles}
-      />
-      <Button 
-        label="Toggle lights"
-        onClick={() => {
-          setDisplayLights((prev) => {
-            if (!displayLightsRef.current) {
-              console.warn('displayLightsRef.current is not set')
-              return prev
-            }
-            return !prev
-          })
-        }}
-        styles={lightingStyles}
-      />
     </div>
   )
 }

@@ -1,9 +1,9 @@
 import { useEffect, useState, useRef } from 'react'
 import { OptionSelect } from '../components/optionSelect'
 import { ColourSelect } from '../components/colourSelect'
-import { useThree } from '../hooks/three'
 import { Loading } from '../components/loading'
-import { toggleVisibility } from '../utils/toggleVisibility'
+import { useThree } from '../hooks/three'
+import { toggleVisibility } from '../utils/functions'
 
 export default function Config() {
   const [loading, setLoading] = useState(true)
