@@ -96,31 +96,17 @@ export default function Config() {
 
   // initialising everything
   useEffect(() => {
-    if (!loadedFiles) {
-      // TODO
-      console.log('will figure out how to handle this later')
+    if (!loadedFiles || !modelOptionsRef.current || !defaultModelRef.current || hasInitialisedRef.current) {
+      console.warn('not yet loaded or initialised')
       return
     }
-    if (!modelOptionsRef.current) {
-      console.warn('modelOptionsRef.current is not yet set')
-      return
-    }
-    if (!defaultModelRef.current) {
-      console.warn('defaultModelRef.current is not yet set')
-      return
-    }
-    if (hasInitialisedRef.current) {
-      console.log(initialOptionsRef.current)
+    if (Object.keys(currentSelection).length > 0) {
+      console.warn('currentSelection is already set, not resetting it')
       return
     }
 
     // setting the initial options for the model
     initialOptionsRef.current = modelOptionsRef.current && Object.keys(modelOptionsRef.current)
-
-    if (Object.keys(currentSelection).length > 0) {
-      console.warn('currentSelection is already set, not resetting it')
-      return
-    }
 
     const initial: currentSelection = {}
     Object.entries(defaultModelRef.current).forEach(([part, option]) => {
