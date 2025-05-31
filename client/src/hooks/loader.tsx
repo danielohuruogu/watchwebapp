@@ -68,6 +68,11 @@ export function useLoader() {
               }
               child.scale.set(0.1, 0.1, 0.1)
               child.rotateX(-Math.PI / 4)
+              // clone the child material to avoid issues with shared materials
+              if (child instanceof Three.Mesh && child.material) {
+                child.material = child.material.clone()
+                child.material.isShared = false
+              }
               modelsRefHolder[part][option][sanitizedModelBitGroupName].push(child)
             })
 
