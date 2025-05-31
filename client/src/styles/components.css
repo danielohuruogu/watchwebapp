@@ -11,6 +11,10 @@
     font-weight: 800;
 }
 
+.arrow-button[disabled] {
+    opacity: 0.2;
+}
+
 /* FOR OPTION SELECT */
 .option-select {
     display: flex;

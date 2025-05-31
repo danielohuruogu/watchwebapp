@@ -21,7 +21,11 @@ export function useInitScene(ref: React.RefObject<HTMLDivElement | null>) {
   } = useThree()
 
   const maxAspectRatio = window.innerWidth / window.innerHeight
-  const backgroundColor = '#F7F7F7'
+  const backgroundColor = {
+    r: 255,
+    g: 255,
+    b: 255
+  }
 
   const initScene = useCallback(() => {
     if (!ref.current) return
@@ -31,7 +35,7 @@ export function useInitScene(ref: React.RefObject<HTMLDivElement | null>) {
     // SCENE SET UP
     const scene = new Three.Scene()
     scene.fog = new Three.Fog('#000000', 5, 20)
-    scene.background = new Three.Color(backgroundColor)
+    scene.background = new Three.Color(Object.entries(backgroundColor).join(',').replace(/,/g, ', '))
     scene.add(new Three.GridHelper(1000, 1000))
 
     const groundGeo = new Three.PlaneGeometry( 10000, 10000 )
@@ -166,10 +170,8 @@ export function useInitScene(ref: React.RefObject<HTMLDivElement | null>) {
     screenshotButton.classList.toggle('hidden', autoRotate)
 
     // checking displayLights
-    console.log('checking displayLights')
     if (displayLights) {
       // turn the fog and background to a darker color
-      console.log('displayLights is true, turning down the lights.')
       gsap.to(sceneRef.current.fog, {
         far: 15,
         duration: 0.6,
@@ -194,16 +196,15 @@ export function useInitScene(ref: React.RefObject<HTMLDivElement | null>) {
       //   ease: 'power2.inOut'
       // })
     } else {
-      console.log('displayLights is now false, making backgroun brighter.')
       gsap.to(sceneRef.current.fog, {
         far: 50,
         duration: 0.3,
         ease: 'power2.inOut'
       })
       gsap.to(sceneRef.current.background, {
-        r: 247/255,
-        g: 247/255,
-        b: 247/255,
+        r: backgroundColor.r,
+        g: backgroundColor.g,
+        b: backgroundColor.b,
         duration: 0.3,
         ease: 'power2.inOut'
       })

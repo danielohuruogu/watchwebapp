@@ -17,21 +17,23 @@ interface currentSelection {
 interface defaultConfigDigital extends currentSelection {
   housing: 'button',
   casing: 'button',
-  strap: 'cotton',
-  face: 'digital'
+  face: 'digital',
+  strap: 'cotton'
 }
 
 interface defaultConfigAnalogue extends currentSelection{
   housing: 'standard',
   casing: 'standard',
-  strap: 'rubber',
-  face: 'analogue1' | 'analogue2'
+  face: 'analogue1' | 'analogue2',
+  strap: 'rubber'
 }
 
 // INTERFACES FOR PROPS
 interface OptionSelectProps {
   label: string,
   choices: string[],
+  defaultValue: string,
+  currentValue: string,
   setCurrentSelection: React.Dispatch<React.SetStateAction<currentSelection>>,
   setGroupTransitionClasses: React.Dispatch<React.SetStateAction<Record<string, string>>>
 }
