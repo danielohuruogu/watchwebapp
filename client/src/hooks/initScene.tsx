@@ -123,7 +123,6 @@ export function useInitScene(ref: React.RefObject<HTMLDivElement | null>) {
     const renderer = new Three.WebGLRenderer()
     renderer.setPixelRatio(window.devicePixelRatio)
     renderer.shadowMap.enabled = true
-    renderer.toneMapping = Three.ReinhardToneMapping
 
     renderer.setSize(sizes.sceneWidth as number, window.innerHeight, false)   
 

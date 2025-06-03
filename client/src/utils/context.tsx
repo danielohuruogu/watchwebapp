@@ -91,11 +91,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
     
     // setting a default to begin with
-    if (Math.random() > 0.5) {
-      defaultModelRef.current = digitalConfig
-    } else {
-      defaultModelRef.current = analogueConfig
-    }
+    // if (Math.random() > 0.5) {
+    //   defaultModelRef.current = digitalConfig
+    // } else {
+    //   defaultModelRef.current = analogueConfig
+    // }
+    defaultModelRef.current = digitalConfig // for now, always use the digital config
 
     // go through the current and add them to the scene
     Object.entries(defaultModelRef.current).forEach(([partType, option]) => { // example would be strap, cotton

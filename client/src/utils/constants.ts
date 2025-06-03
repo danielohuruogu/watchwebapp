@@ -81,18 +81,18 @@ const lights: {
   },
   rimLight1: {
     display: {
-      intensity: 250,
+      intensity: 350,
     },
   },
   rimLight2: {
     display: {
-      intensity: 100,
+      intensity: 200,
     },
   },
   backlight: {
     display: {
       color: 0x9ecfff,
-      intensity: 250,
+      intensity: 450,
     }
   }
 }
