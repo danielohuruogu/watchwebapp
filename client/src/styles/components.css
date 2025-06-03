@@ -15,6 +15,18 @@
     opacity: 0.2;
 }
 
+.custom-button.hidden {
+    display: none;
+}
+
+.header {
+    transition: all 1s ease-in-out;
+}
+
+.white-header {
+    color: white;
+}
+
 /* FOR OPTION SELECT */
 .option-select {
     display: flex;
@@ -172,8 +184,4 @@
     left: 0;
     z-index: 10;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-}
-
-.custom-button.hidden {
-    display: none;
 }

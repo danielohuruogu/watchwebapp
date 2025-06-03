@@ -59,7 +59,6 @@ export default function Config() {
     const newSelection = { ...currentSelection }
 
     Object.entries(validChoicesMap).forEach(([part, validChoices]) => {
-      // If the current selection for this part is not valid, pick the first valid choice
       if (!validChoices.includes(currentSelection[part])) {
         newSelection[part] = validChoices[0] || ''
         updated = true

@@ -5,8 +5,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 export const AppContext = createContext<{
   sceneRef: React.RefObject<Three.Scene | null>
   cameraRef: React.RefObject<Three.PerspectiveCamera | null>
-  hemisphericLightRef: React.RefObject<Three.HemisphereLight | null>
-  bulbLightRef: React.RefObject<Three.PointLight | null>
+  standardLightsRef: React.RefObject<Three.Group | null>
   displayLightsRef: React.RefObject<Three.Group | null>
   rendererRef: React.RefObject<Three.WebGLRenderer | null>
   modelOptionsRef: React.RefObject<models>
@@ -28,8 +27,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   // refs for the scene
   const sceneRef = useRef<Three.Scene | null>(null)
   const cameraRef = useRef<Three.PerspectiveCamera | null>(null)
-  const hemisphericLightRef = useRef<Three.HemisphereLight | null>(null)
-  const bulbLightRef = useRef<Three.PointLight | null>(null)
+  const standardLightsRef = useRef<Three.Group | null>(null)
   const displayLightsRef = useRef<Three.Group | null>(null)
   const rendererRef = useRef<Three.WebGLRenderer | null>(null)
   const orbitControlsRef = useRef<OrbitControls | null>(null)
@@ -50,15 +48,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   // check to make sure refs are initialised first
   useEffect(() => {
-    // console.log('sceneRef: ', sceneRef.current)
-    // console.log('cameraRef: ', cameraRef.current)
-    // console.log('atmosphericLightRef: ', hemisphericLightRef.current)
-    // console.log('bulbLightRef: ', bulbLightRef.current)
-    // console.log('rendererRef: ', rendererRef.current)
-    // console.log('orbitControlsRef: ', orbitControlsRef.current)
-    // console.log('modelOptionsRef: ', modelOptionsRef.current)
-    // console.log('displayedSelectionRef: ', displayedSelectionRef.current)
-    // console.log('defaultModelRef: ', defaultModelRef.current)
     if (
       sceneRef.current &&
       cameraRef.current &&
@@ -74,8 +63,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   }, [sceneRef,
       cameraRef,
-      // hemisphericLightRef,
-      // bulbLightRef,
       rendererRef,
       orbitControlsRef,
       modelOptionsRef,
@@ -103,7 +90,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       face: Math.random() > 0.5 ? 'analogue1' : 'analogue2'
     }
     
-    // just to see how one gets chosen to begin with
+    // setting a default to begin with
     if (Math.random() > 0.5) {
       defaultModelRef.current = digitalConfig
     } else {
@@ -130,8 +117,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     <AppContext.Provider value={{
       sceneRef,
       cameraRef,
-      hemisphericLightRef,
-      bulbLightRef,
+      standardLightsRef,
       displayLightsRef,
       rendererRef,
       modelOptionsRef,
