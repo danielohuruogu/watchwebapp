@@ -5,6 +5,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 export const AppContext = createContext<{
   sceneRef: React.RefObject<Three.Scene | null>
   cameraRef: React.RefObject<Three.PerspectiveCamera | null>
+  skyRef: React.RefObject<Three.Mesh | null>
   standardLightsRef: React.RefObject<Three.Group | null>
   displayLightsRef: React.RefObject<Three.Group | null>
   rendererRef: React.RefObject<Three.WebGLRenderer | null>
@@ -27,6 +28,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   // refs for the scene
   const sceneRef = useRef<Three.Scene | null>(null)
   const cameraRef = useRef<Three.PerspectiveCamera | null>(null)
+  const skyRef = useRef<Three.Mesh | null>(null)
   const standardLightsRef = useRef<Three.Group | null>(null)
   const displayLightsRef = useRef<Three.Group | null>(null)
   const rendererRef = useRef<Three.WebGLRenderer | null>(null)
@@ -91,12 +93,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
     
     // setting a default to begin with
-    // if (Math.random() > 0.5) {
-    //   defaultModelRef.current = digitalConfig
-    // } else {
-    //   defaultModelRef.current = analogueConfig
-    // }
-    defaultModelRef.current = digitalConfig // for now, always use the digital config
+    if (Math.random() > 0.5) {
+      defaultModelRef.current = digitalConfig
+    } else {
+      defaultModelRef.current = analogueConfig
+    }
 
     // go through the current and add them to the scene
     Object.entries(defaultModelRef.current).forEach(([partType, option]) => { // example would be strap, cotton
@@ -118,6 +119,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     <AppContext.Provider value={{
       sceneRef,
       cameraRef,
+      skyRef,
       standardLightsRef,
       displayLightsRef,
       rendererRef,

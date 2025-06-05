@@ -5,12 +5,13 @@ import gsap from 'gsap'
 import { useCallback, useEffect } from 'react'
 
 import { useThree } from './three'
-import { sizes, materials, colours, lights } from '../utils/constants'
+import { sizes, materials, lights } from '../utils/constants'
 
 export function useInitScene(ref: React.RefObject<HTMLDivElement | null>) {
   const {
     sceneRef,
     cameraRef,
+    skyRef,
     standardLightsRef,
     displayLightsRef,
     rendererRef,
@@ -20,8 +21,6 @@ export function useInitScene(ref: React.RefObject<HTMLDivElement | null>) {
   } = useThree()
 
   const maxAspectRatio = window.innerWidth / window.innerHeight
-  const backgroundColourStandard = colours.background.standard
-  const backgroundColourDisplay = colours.background.display
 
   const groundLevel = -20
 
@@ -30,18 +29,27 @@ export function useInitScene(ref: React.RefObject<HTMLDivElement | null>) {
 
     if (sceneRef.current) return
 
-    // SCENE SET UP
+    // // SCENE SET UP
     const scene = new Three.Scene()
-    scene.background = new Three.Color(backgroundColourStandard.r, backgroundColourStandard.g, backgroundColourStandard.b)
-    scene.background.setHSL(0,0,.96) // off-white background, kinda grey
+    scene.background = new Three.Color().setHSL(0.6,0,1)
+    scene.fog = new Three.Fog( scene.background, 1, sizes.sceneSize as number )
 
-    const groundGeo = new Three.PlaneGeometry(10000, 10000)
+    const groundGeo = new Three.PlaneGeometry(sizes.sceneSize as number, sizes.sceneSize as number)
   
-    const ground = new Three.Mesh(groundGeo, materials.ground)
+    const groundMat = materials.ground as Three.MeshLambertMaterial
+    const ground = new Three.Mesh(groundGeo, groundMat)
     ground.position.y = groundLevel
     ground.rotation.x = - Math.PI / 2
     ground.receiveShadow = true
     scene.add(ground)
+
+    // // SKY DOME
+    const skyGeo = new Three.SphereGeometry(sizes.sceneSize as number, 32, 15)
+    const skyMat = materials.skyDomeGradient as Three.ShaderMaterial
+    const sky = new Three.Mesh(skyGeo, skyMat)
+    sky.material.opacity = 0
+    sky.rotateOnWorldAxis(new Three.Vector3(1, 0, 0), 0.0001)
+    scene.add(sky)
 
     // // LIGHTING
     // standard lights
@@ -53,46 +61,65 @@ export function useInitScene(ref: React.RefObject<HTMLDivElement | null>) {
     topLight.name = 'topLight'
     topLight.position.set(0, 5, 0)
     topLight.castShadow = true
+    topLight.shadow.bias = -0.001
+    topLight.shadow.normalBias = 0.01
     standardLightsGroup.add(topLight)
 
     const frontLight = new Three.SpotLight(0xffffff, 0.8)
     frontLight.name = 'frontLight'
     frontLight.position.set(0, 5, 2)
     frontLight.castShadow = true
+    frontLight.shadow.bias = -0.001
+    frontLight.shadow.normalBias = 0.01
     standardLightsGroup.add(frontLight)
 
     const leftLight = new Three.SpotLight(0xffffff, 0.5)
     leftLight.name = 'leftLight'
     leftLight.position.set(-5, 0, 1)
+    leftLight.shadow.bias = -0.001
+    leftLight.shadow.normalBias = 0.01
     standardLightsGroup.add(leftLight)
 
     const rightLight = new Three.SpotLight(0xffffff, 0.5)
     rightLight.name = 'rightLight'
     rightLight.position.set(5, 0, 1)
+    rightLight.shadow.bias = -0.001
+    rightLight.shadow.normalBias = 0.01
     standardLightsGroup.add(rightLight)
 
     // for display mode
     const displayLightsGroup = new Three.Group()
-    const keyLight = new Three.SpotLight(0xffffff, 1500)
+
+    const keyLight = new Three.SpotLight(0xffffff, lights.keyLight.standard?.intensity as number, 70, Math.PI/6, 0.5)
     keyLight.name = 'keyLight'
     keyLight.position.set(0, 8, 8)
-    keyLight.angle = Math.PI / 6
-    keyLight.penumbra = 0.5
-    keyLight.decay = 2
-    keyLight.distance = 10
+    keyLight.shadow.bias = -0.001
+    keyLight.shadow.normalBias = 0.01
+    keyLight.shadow.mapSize.width = 4096
+    keyLight.shadow.mapSize.height = 4096
+    keyLight.shadow.camera.near = 0.5
+    keyLight.shadow.camera.far = 50
     keyLight.castShadow = true
     displayLightsGroup.add(keyLight)
 
-    const rimLight1 = new Three.SpotLight(0xffffff, 250, 50, 0.3, 1)
+    const rimLight1 = new Three.SpotLight(0xffffff, lights.rimLight1.display?.intensity as number, 50, 0.3, 1)
     rimLight1.position.set(-12, 2, -12)
     rimLight1.name = 'rimlight1'
     rimLight1.castShadow = true
+    rimLight1.shadow.bias = -0.001
+    rimLight1.shadow.normalBias = 0.01
+    rimLight1.shadow.camera.near = 0.5
+    rimLight1.shadow.camera.far = 50
     displayLightsGroup.add(rimLight1)
 
-    const rimLight2 = new Three.SpotLight(0xffffff, 100, 50, 0.3, 1)
+    const rimLight2 = new Three.SpotLight(0xffffff, lights.rimLight2.display?.intensity as number, 50, 0.3, 1)
     rimLight2.position.set(5, -2, 10)
     rimLight2.name = 'rimlight2'
     rimLight2.castShadow = true
+    rimLight2.shadow.bias = -0.001
+    rimLight2.shadow.normalBias = 0.01
+    rimLight2.shadow.camera.near = 0.5
+    rimLight2.shadow.camera.far = 50
     displayLightsGroup.add(rimLight2)
     
     // backlights
@@ -104,18 +131,23 @@ export function useInitScene(ref: React.RefObject<HTMLDivElement | null>) {
     ]
 
     backlightPositions.forEach((position) => {
-      const backlight = new Three.PointLight(lights.backlights.display?.color as Three.ColorRepresentation, 250, 15)
+      const backlight = new Three.PointLight(
+        lights.backlights.display?.color as Three.ColorRepresentation,
+        lights.backlights.display?.intensity as number,
+        15)
       backlight.position.set(position[0], position[1], position[2])
       backlight.color = new Three.Color(lights.backlights.display?.color as Three.ColorRepresentation)
       backlight.castShadow = true
+      backlight.shadow.bias = -0.001
+      backlight.shadow.normalBias = 0.01
       displayLightsGroup.add(backlight)
     })
 
     scene.add(displayLightsGroup)
     scene.add(standardLightsGroup)
 
-    // CAMERAS
-    const camera = new Three.PerspectiveCamera(75, maxAspectRatio, 0.1, 1000)
+    // // CAMERAS
+    const camera = new Three.PerspectiveCamera(75, maxAspectRatio, 0.1, sizes.sceneSize as number)
     camera.position.set(-5, 5, 8)
 
     scene.add(camera)
@@ -123,11 +155,10 @@ export function useInitScene(ref: React.RefObject<HTMLDivElement | null>) {
     const renderer = new Three.WebGLRenderer()
     renderer.setPixelRatio(window.devicePixelRatio)
     renderer.shadowMap.enabled = true
+    renderer.shadowMap.type = Three.PCFSoftShadowMap
+    renderer.setSize(sizes.renderSceneWidth as number, window.innerHeight, false)   
 
-    renderer.setSize(sizes.sceneWidth as number, window.innerHeight, false)   
-
-    // ORBIT CONTROLS
-    // the orbit controls are to align with the display camera
+    // // ORBIT CONTROLS
     const orbitControls = new OrbitControls(camera, renderer.domElement)
     orbitControls.enableDamping = true
     orbitControls.dampingFactor = 0.3
@@ -135,10 +166,11 @@ export function useInitScene(ref: React.RefObject<HTMLDivElement | null>) {
     orbitControls.panSpeed = 1.25
     orbitControls.autoRotateSpeed = 4
 
-    // SETTING REFS
+    // // SETTING REFS
     standardLightsRef.current = standardLightsGroup
     displayLightsRef.current = displayLightsGroup
     cameraRef.current = camera
+    skyRef.current = sky
 
     sceneRef.current = scene
     rendererRef.current = renderer
@@ -160,7 +192,7 @@ export function useInitScene(ref: React.RefObject<HTMLDivElement | null>) {
     const screenshotButton = document.querySelector('#screenshot-button')
     const header = document.querySelector('.header')
 
-    if (!cameraRef.current || !sceneRef.current || !screenshotButton || !orbitControlsRef.current) {
+    if (!cameraRef.current || !sceneRef.current || !screenshotButton || !orbitControlsRef.current || !skyRef.current) {
       console.warn('Stuff not initialized.')
       return
     }
@@ -177,31 +209,40 @@ export function useInitScene(ref: React.RefObject<HTMLDivElement | null>) {
 
     screenshotButton.classList.toggle('hidden', autoRotate)
 
-    // checking displayLights
     if (displayLights) {
-      // change header colour to white
       header?.classList.add('white-header')
-      gsap.to(sceneRef.current.background, {
-        r: backgroundColourDisplay.r,
-        g: backgroundColourDisplay.g,
-        b: backgroundColourDisplay.b,
+      if (
+        skyRef.current.material instanceof Three.ShaderMaterial
+        && skyRef.current.material.uniforms.opacity
+      ) {
+        gsap.to(skyRef.current.material.uniforms.opacity, { // get the sky to appear
+          value: 1,
+          duration: 0.6,
+          ease: 'power2.inOut'
+        })
+      }
+      gsap.to(sceneRef.current.fog, {
+        far: 1000,
         duration: 0.6,
         ease: 'power2.inOut'
       })
     } else {
-      // change header colour to off-white
       header?.classList.remove('white-header')
-      // change background back to standard
-      console.log('background color before animating', sceneRef.current.background)
-      console.log('set background color to', backgroundColourStandard)
-      gsap.to(sceneRef.current.background, {
-        r: backgroundColourStandard.r,
-        g: backgroundColourStandard.g,
-        b: backgroundColourStandard.b,
+      if (
+        skyRef.current.material instanceof Three.ShaderMaterial
+        && skyRef.current.material.uniforms.opacity
+      ) {
+        gsap.to(skyRef.current.material.uniforms.opacity, { // get the sky to disappear
+          value: 0,
+          duration: 0.3,
+          ease: 'power2.inOut'
+        })
+      }
+      gsap.to(sceneRef.current.fog, {
+        far: sizes.sceneSize as number,
         duration: 0.3,
         ease: 'power2.inOut'
       })
-      console.log('background color after animating', sceneRef.current.background)
     }
 
     standardLightsRef.current?.children.forEach(light => {
