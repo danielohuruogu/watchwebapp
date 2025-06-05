@@ -5,7 +5,7 @@ import gsap from 'gsap'
 import { useCallback, useEffect } from 'react'
 
 import { useThree } from './three'
-import { sizes, materials, lights } from '../utils/constants'
+import { aspectRatio, sizes, materials, lights } from '../utils/constants'
 
 export function useInitScene(ref: React.RefObject<HTMLDivElement | null>) {
   const {
@@ -19,8 +19,6 @@ export function useInitScene(ref: React.RefObject<HTMLDivElement | null>) {
     autoRotate,
     displayLights
   } = useThree()
-
-  const maxAspectRatio = window.innerWidth / window.innerHeight
 
   const groundLevel = -20
 
@@ -48,7 +46,7 @@ export function useInitScene(ref: React.RefObject<HTMLDivElement | null>) {
     const skyMat = materials.skyDomeGradient as Three.ShaderMaterial
     const sky = new Three.Mesh(skyGeo, skyMat)
     sky.material.opacity = 0
-    sky.rotateOnWorldAxis(new Three.Vector3(1, 0, 0), 0.0001)
+    sky.rotateOnWorldAxis(new Three.Vector3(1, 0, 0), 0.0005)
     scene.add(sky)
 
     // // LIGHTING
@@ -147,16 +145,17 @@ export function useInitScene(ref: React.RefObject<HTMLDivElement | null>) {
     scene.add(standardLightsGroup)
 
     // // CAMERAS
-    const camera = new Three.PerspectiveCamera(75, maxAspectRatio, 0.1, sizes.sceneSize as number)
+    const camera = new Three.PerspectiveCamera(75, aspectRatio, 0.1, (sizes.sceneSize  as number) + 2000)
     camera.position.set(-5, 5, 8)
 
     scene.add(camera)
 
+    // // RENDERER
     const renderer = new Three.WebGLRenderer()
     renderer.setPixelRatio(window.devicePixelRatio)
     renderer.shadowMap.enabled = true
     renderer.shadowMap.type = Three.PCFSoftShadowMap
-    renderer.setSize(sizes.renderSceneWidth as number, window.innerHeight, false)   
+    renderer.setSize(sizes.renderSceneWidth as number, sizes.renderSceneHeight as number, false)   
 
     // // ORBIT CONTROLS
     const orbitControls = new OrbitControls(camera, renderer.domElement)

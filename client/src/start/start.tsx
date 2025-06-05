@@ -7,7 +7,7 @@ import { useAnimate } from '../hooks/animate'
 import Header from '../ui/header'
 import Button from '../components/button'
 import { downloadScreenshot, resetCamera } from '../utils/functions'
-import { sizes } from '../utils/constants'
+import { aspectRatio, sizes } from '../utils/constants'
 
 function Start () {
   const sceneContainer = useRef<HTMLDivElement>(null)
@@ -40,9 +40,9 @@ function Start () {
 
     const handleResize = () => {
       if (cameraRef.current && rendererRef.current) {
-        cameraRef.current.aspect = window.innerWidth / window.innerHeight
+        cameraRef.current.aspect = aspectRatio
         cameraRef.current.updateProjectionMatrix()
-        rendererRef.current.setSize(sizes.sceneWidth as number, window.innerHeight)
+        rendererRef.current.setSize(sizes.renderSceneWidth as number, sizes.renderSceneHeight as number)
         orbitControlsRef.current?.update()
       }
     }

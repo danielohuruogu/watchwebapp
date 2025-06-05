@@ -3,6 +3,7 @@ import * as Three from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 
 export const AppContext = createContext<{
+  loaderRef: React.RefObject<Three.LoadingManager>
   sceneRef: React.RefObject<Three.Scene | null>
   cameraRef: React.RefObject<Three.PerspectiveCamera | null>
   skyRef: React.RefObject<Three.Mesh | null>
@@ -25,6 +26,9 @@ export const AppContext = createContext<{
 } | null>(null)
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  // ref for the loader
+  const loaderRef = useRef<Three.LoadingManager>(new Three.LoadingManager())
+
   // refs for the scene
   const sceneRef = useRef<Three.Scene | null>(null)
   const cameraRef = useRef<Three.PerspectiveCamera | null>(null)
@@ -117,6 +121,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   return (
     <AppContext.Provider value={{
+      loaderRef,
       sceneRef,
       cameraRef,
       skyRef,

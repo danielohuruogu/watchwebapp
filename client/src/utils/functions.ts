@@ -72,18 +72,22 @@ const toggleVisibility = (scene: Three.Scene, currentSelectionContainer: models)
   })
 
   // go through the current selection and add the children to the scene
+  if (!currentSelectionContainer || Object.keys(currentSelectionContainer).length === 0) {
+    console.error('currentSelectionRef.current is not set')
+    return false
+  }
   Object.entries(currentSelectionContainer).forEach(([partType, option]) => { // example would be strap, cotton
     const optionName = Object.keys(option)[0]
     const selectedModelPart = currentSelectionContainer[partType][optionName]
     if (!selectedModelPart) {
       console.error(`No model part found for ${selectedModelPart}`)
-      return
+      return false
     }
     // modelPart could be cotton strap - add all the children to the scene
     Object.values(selectedModelPart).forEach((group) => {
       if (!scene) {
         console.error('sceneRef.current is not set')
-        return
+        return false
       }
       group.forEach((child) => {
         child.castShadow = true
@@ -91,6 +95,7 @@ const toggleVisibility = (scene: Three.Scene, currentSelectionContainer: models)
       })
     })
   })
+  return true
 }
 
 const resetCamera = (orbitControls: OrbitControls, camera: Three.PerspectiveCamera): void => {
@@ -107,8 +112,20 @@ const resetCamera = (orbitControls: OrbitControls, camera: Three.PerspectiveCame
   })
 }
 
+const formatOptionName = (optionName: string): string => {
+  // capitalise the first letter
+  let formattedName
+  formattedName = optionName.charAt(0).toUpperCase() + optionName.slice(1)
+
+  // if it matches the Regex pattern for a word and number e.g. Analogue1, seperate with a space
+  if (formattedName.match(/^[A-Za-z]+[0-9]+$/)) formattedName = formattedName.replace(/([a-zA-Z])(\d)/g, '$1 $2')
+  
+  return formattedName
+}
+
 export {
   downloadScreenshot,
   toggleVisibility,
-  resetCamera
+  resetCamera,
+  formatOptionName
 }

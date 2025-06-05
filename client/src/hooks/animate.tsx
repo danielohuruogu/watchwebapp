@@ -13,7 +13,7 @@ export function useAnimate() {
     orbitControlsRef.current.update()
     rendererRef.current.render(sceneRef.current, cameraRef.current)
 
-    skyRef.current.rotateOnWorldAxis(new Three.Vector3(1, 0, 0), 0.0001)
+    skyRef.current.rotateOnWorldAxis(new Three.Vector3(1, 0, 0), 0.0005)
 
     return animationId
   }, [])

@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { OptionSelect } from '../components/optionSelect'
 import { ColourSelect } from '../components/colourSelect'
-import { Loading } from '../components/loading'
 import { useThree } from '../hooks/three'
 import { toggleVisibility } from '../utils/functions'
 
@@ -18,9 +17,8 @@ export default function Config() {
 
   // container for the model options to persist across renders
   const initialOptionsRef = useRef<string[] | null>(null)
-  const hasInitialisedRef = useRef<boolean>(false)
 
-  // indicating if its a valid choice given the "business" logic
+  // indicating if its a valid choice given the design logic - for G Shock watches only
   const validChoicesMap = useMemo((): { [key: string]: string[] } => {
     if (!currentSelection) return {}
     if (!initialOptionsRef.current) return {}
@@ -52,6 +50,7 @@ export default function Config() {
     return finalChoicesMap
   }, [currentSelection])
 
+  // useEffect to update the current selection given the validChoicesMap
   useEffect(() => {
     if (!validChoicesMap || Object.keys(validChoicesMap).length === 0) return
 
@@ -90,12 +89,19 @@ export default function Config() {
         }
       })
     }
-    toggleVisibility(sceneRef.current, displayedSelectionRef.current)
+
+    const successfulToggling = toggleVisibility(sceneRef.current, displayedSelectionRef.current)
+
+    if (Object.keys(currentSelection).length > 0 && successfulToggling) {
+      setLoading(false)
+      const progressBarContainer: HTMLElement | null = document.querySelector('.progress-bar-container')
+      if (progressBarContainer) progressBarContainer.style.display = 'none'
+    }
   }, [currentSelection])
 
-  // initialising everything
+  // useEffect to set the initial options
   useEffect(() => {
-    if (!loadedFiles || !modelOptionsRef.current || !defaultModelRef.current || hasInitialisedRef.current) {
+    if (!loadedFiles || !modelOptionsRef.current || !defaultModelRef.current) {
       console.warn('not yet loaded or initialised')
       return
     }
@@ -113,16 +119,16 @@ export default function Config() {
     })
     setCurrentSelection(initial)
 
-    // finally set loading to false to load the page
-    setLoading(false)
-    hasInitialisedRef.current = true
-  }, [loadedFiles, defaultModelRef.current, modelOptionsRef.current, hasInitialisedRef.current])
+  }, [loadedFiles, defaultModelRef.current, modelOptionsRef.current])
 
   return (
     <div className="config-container">
       <div className="optionSelect-area">
-        {loading ?
-          <Loading />
+        {loading ? (
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '10px' }}>
+            <p className="loading-text">Loading...</p>
+          </div>
+          )
           : 
           (
             <div className="optionSelect-container">
@@ -130,7 +136,7 @@ export default function Config() {
                 <h2>Options</h2>
               </div>
               <div className='optionSelect-items'>
-                {(initialOptionsRef.current && hasInitialisedRef.current) &&
+                {(initialOptionsRef.current) &&
                 initialOptionsRef.current.map(part => {
                   const choices = validChoicesMap && validChoicesMap[part as string]
 
@@ -151,12 +157,15 @@ export default function Config() {
           )}
       </div>
       <div className="colourSelect-area">
-        {loading ? 
-          <Loading />
+        {loading ? (
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '10px' }}>
+            <p className="loading-text">Loading...</p>
+          </div>
+          )
           : 
           (
             <div className="colourSelect-container">
-              <div className="colourSelect-header">
+              <div className="colour-select-header">
                 <h2>Choose your style</h2>
               </div>
               {currentSelection && Object.entries(currentSelection).map(([part, option]) => {

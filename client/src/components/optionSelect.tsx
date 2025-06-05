@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, useMemo } from 'react'
 import Button from './button'
+import { formatOptionName } from '../utils/functions'
 
 export const OptionSelect = ({ label, choices, defaultValue, currentValue, setCurrentSelection, setGroupTransitionClasses }: OptionSelectProps) => {
   const [optionIndex, setOptionIndex] = useState(0) // for keeping track of the current option index
@@ -93,7 +94,7 @@ export const OptionSelect = ({ label, choices, defaultValue, currentValue, setCu
           onClick={handleCycleDown}
           disabled={shouldBeDisabled} // disable if choices length is 1 or less
         />
-        <div className="option-select-value">{boxValue !== '' ? boxValue.charAt(0).toUpperCase() + boxValue.slice(1) : ''}</div>
+        <div className="option-select-value">{boxValue !== '' ? formatOptionName(boxValue) : ''}</div>
         <Button
           id={'arrow-button-up'}
           className='arrow-button'

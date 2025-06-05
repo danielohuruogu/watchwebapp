@@ -1,9 +1,11 @@
 import * as Three from 'three'
 
+const aspectRatio = 1.558
+
 const sizes: { [key: string]: number | string } = {}
 
 sizes.renderSceneWidth = 0.75 * window.innerWidth // for the renderer window
-sizes.renderSceneHeight = window.innerHeight
+sizes.renderSceneHeight = 0.95 *window.innerHeight
 sizes.sceneSize = 10000 // size for ground, sphere dome and camera far
 
 const materials: { [key: string]: Three.MeshStandardMaterial | Three.MeshLambertMaterial | Three.ShaderMaterial } = {}
@@ -33,17 +35,17 @@ materials['skyDomeGradient'] = new Three.ShaderMaterial({
       opacity: { value: 0 }
   },
   vertexShader: `
-  varying vec3 vWorldPosition;
-  varying vec2 vUv;
+    varying vec3 vWorldPosition;
+    varying vec2 vUv;
 
-  void main() {
-    vUv = uv;
-    vec4 worldPosition = modelMatrix * vec4(position, 1.0);
-    vWorldPosition = worldPosition.xyz;
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-  }
-  `,
-    fragmentShader: `
+    void main() {
+      vUv = uv;
+      vec4 worldPosition = modelMatrix * vec4(position, 1.0);
+      vWorldPosition = worldPosition.xyz;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+    `,
+  fragmentShader: `
     uniform vec3 FogColour;
     uniform vec3 LowerSkyColour;
     uniform vec3 LowMidSkyColour;
@@ -172,6 +174,7 @@ const lights: {
 }
 
 export {
+  aspectRatio,
   sizes,
   materials,
   colours,

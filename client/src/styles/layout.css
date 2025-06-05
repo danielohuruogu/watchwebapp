@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: row;
     justify-content: center;
-    max-height: 100vh;
+    max-height: 90vh;
   }
 
 .start-container {
@@ -10,7 +10,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 100%;
+    width: 65vw;
     height: 100%;
 }
 
@@ -46,8 +46,6 @@
 .config-container {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
     height: 100%;
     width: 35vw;
     transition: all 0.3s ease-in-out;
@@ -101,6 +99,7 @@
     width: 100%;
     display: flex;
     flex-direction: column;
+    /* padding-left: 20px; */
 }
 
 .colourSelect-container > .row-1 {
