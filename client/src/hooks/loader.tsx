@@ -17,13 +17,13 @@ export function useLoader() {
       const modelPaths = [
         '/assets/housing_button.3dm',
         '/assets/housing_standard.3dm',
-        // '/assets/casing_button.3dm',
-        // '/assets/casing_standard.3dm',
+        '/assets/casing_button.3dm',
+        '/assets/casing_standard.3dm',
         '/assets/face_analogue1.3dm',
         '/assets/face_digital.3dm',
         '/assets/face_analogue2.3dm',
-        // '/assets/strap_cotton.3dm',
-        // '/assets/strap_rubber.3dm',
+        '/assets/strap_cotton.3dm',
+        '/assets/strap_rubber.3dm',
       ]
 
       const modelsRefHolder: models = modelOptionsRef.current || {}
