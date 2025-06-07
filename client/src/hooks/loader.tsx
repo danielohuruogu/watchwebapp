@@ -17,13 +17,13 @@ export function useLoader() {
       const modelPaths = [
         '/assets/housing_button.3dm',
         '/assets/housing_standard.3dm',
-        '/assets/casing_button.3dm',
-        '/assets/casing_standard.3dm',
+        // '/assets/casing_button.3dm',
+        // '/assets/casing_standard.3dm',
         '/assets/face_analogue1.3dm',
         '/assets/face_digital.3dm',
         '/assets/face_analogue2.3dm',
-        '/assets/strap_cotton.3dm',
-        '/assets/strap_rubber.3dm',
+        // '/assets/strap_cotton.3dm',
+        // '/assets/strap_rubber.3dm',
       ]
 
       const modelsRefHolder: models = modelOptionsRef.current || {}
@@ -49,6 +49,7 @@ export function useLoader() {
           path,
           (object: Three.Object3D) => {
             object.traverse((child) => {
+              if (path === '/assets/face_digital.3dm') console.log(child)
               const modelBitGroupName = child.name
               // if the child has no name, don't bother
               if (!modelBitGroupName) return
@@ -69,7 +70,7 @@ export function useLoader() {
               child.scale.set(0.1, 0.1, 0.1)
               child.rotateX(-Math.PI / 4)
               // clone the child material to avoid issues with shared materials
-              if (child instanceof Three.Mesh && child.material) {
+              if ((child instanceof Three.Mesh || child instanceof Three.Line || child instanceof Three.LineSegments) && child.material) {
                 child.material = child.material.clone()
                 child.material.isShared = false
               }

@@ -105,6 +105,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     // go through the current and add them to the scene
     Object.entries(defaultModelRef.current).forEach(([partType, option]) => { // example would be strap, cotton
+      const partTypeInModelRef = modelOptionsRef.current![partType]
+      if (!partTypeInModelRef) {
+        console.warn(`No model options found for ${partType} in modelOptionsRef.current`)
+        return
+      }
       const selectedModelPart = modelOptionsRef.current![partType][option]
       if (!selectedModelPart) return
 

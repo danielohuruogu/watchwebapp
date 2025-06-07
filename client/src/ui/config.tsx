@@ -76,6 +76,11 @@ export default function Config() {
     if (Object.keys(currentSelection).length > 0) {
       displayedSelectionRef.current = {}
       Object.entries(currentSelection).forEach(([partType, option]) => {
+        const partInModelRef = modelOptionsRef.current![partType]
+        if (!partInModelRef) {
+          console.warn(`No model part found for ${partType}`)
+          return
+        }
         const selectedModelPart = modelOptionsRef.current![partType][option]
         if (!selectedModelPart) {
           console.warn(`No model part found for ${partType}.${option}`)
@@ -170,6 +175,11 @@ export default function Config() {
               </div>
               {currentSelection && Object.entries(currentSelection).map(([part, option]) => {
                 // get the groups for the selected option
+                const partInModelRef = modelOptionsRef.current![part]
+                if (!partInModelRef) {
+                  console.warn(`No model part found for ${part}`)
+                  return
+                }
                 const groups = modelOptionsRef.current![part][option]
                 
                 return (

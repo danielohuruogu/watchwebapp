@@ -59,8 +59,8 @@ const toggleVisibility = (scene: Three.Scene, currentSelectionContainer: models)
   const childrenToRemove: Three.Object3D[] = []
   scene.traverse((child: Three.Object3D) => {
     // check if the child is a mesh
-    if (child.isObject3D && child.type === 'Mesh') {
-      const mesh = child as Three.Mesh
+    if (child.isObject3D && (child.type === 'Mesh' || child.type === 'Line' || child.type === 'LineSegments')) {
+      const mesh = child as Three.Mesh | Three.Line
       if (mesh.geometry && (mesh.geometry.type !== 'PlaneGeometry' && mesh.geometry.type !== 'SphereGeometry')) {
       childrenToRemove.push(child)
       }
