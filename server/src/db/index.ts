@@ -1,1 +1,0 @@
-// in this file, will manage the database connection and export the necessary functions
