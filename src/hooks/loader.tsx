@@ -65,7 +65,6 @@ export function useLoader() {
                     modelsRefHolder[part][option][sanitizedModelBitGroupName] = []
                   }
                   child.scale.set(0.1, 0.1, 0.1)
-                  child.rotateX(-Math.PI / 4)
                   // clone the child material to avoid issues with shared materials
                   if ((child instanceof Three.Mesh || child instanceof Three.Line || child instanceof Three.LineSegments) && child.material) {
                     child.material = child.material.clone()

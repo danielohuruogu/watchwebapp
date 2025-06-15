@@ -31,7 +31,7 @@ materials['skyDomeGradient'] = new Three.ShaderMaterial({
       MidSkyColour2: { value: new Three.Color(0x002746) },
       TopSkyColor: { value: new Three.Color(0x001d37) },
       TopSkyColor2: { value: new Three.Color(0x01162e) },
-      starMap: { value: new Three.TextureLoader().load('assets/starmap_16k_d63.jpg') }, // starmap taken from here: https://github.com/PresidentKevvol/three.js-starry-sky/blob/master/index.js
+      starMap: { value: new Three.TextureLoader().load('starmap_16k_d63.jpg') }, // starmap taken from here: https://github.com/PresidentKevvol/three.js-starry-sky/blob/master/index.js
       opacity: { value: 0 }
   },
   vertexShader: `
