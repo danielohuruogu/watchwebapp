@@ -11,7 +11,7 @@ export const AppContext = createContext<{
   displayLightsRef: React.RefObject<Three.Group | null>
   rendererRef: React.RefObject<Three.WebGLRenderer | null>
   modelOptionsRef: React.RefObject<models>
-  defaultModelRef: React.RefObject<defaultConfigDigital | defaultConfigAnalogue>
+  defaultModelRef: React.RefObject<defaultConfigDigital | defaultConfigAnalogue | null>
   displayedSelectionRef: React.RefObject<models>
   modelSizeRef: React.RefObject<number| null>
   orbitControlsRef: React.RefObject<OrbitControls | null>
@@ -42,7 +42,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const modelOptionsRef = useRef<models>({})
   const displayedSelectionRef = useRef<models>({})
   const modelSizeRef = useRef<number | null>(null)
-  const defaultModelRef = useRef<defaultConfigDigital | defaultConfigAnalogue>({})
+  const defaultModelRef = useRef<defaultConfigDigital | defaultConfigAnalogue>(null)
 
   // states for loading states
   const [loadedFiles, setLoadedFiles] = useState<boolean>(false)

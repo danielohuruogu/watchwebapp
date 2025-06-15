@@ -1,4 +1,4 @@
-import { JSX } from "react"
+import { JSX } from 'react'
 
 export default function Button({ id, className, label, onClick, disabled = false, styles = {} }: ButtonProps): JSX.Element { 
   return (

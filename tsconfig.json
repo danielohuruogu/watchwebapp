@@ -1,28 +1,23 @@
 {
   "files": [],
   "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
+    { "path": "./tsconfig.app.json" }
   ],
   "composite": true,
   "compilerOptions": {
     "composite": true,
     "strictNullChecks": true,
-    "noEmit": true,
     "baseUrl": "./",
     "paths": {
       "@types/*": ["types/*"],
-      "@hooks/*": ["./src/hooks/*"],
-      "@utils/*": ["./src/utils/*"],
-      "@ui/*": ["./src/ui/*"],
+      "@hooks/*": ["hooks/*"],
+      "@utils/*": ["utils/*"],
+      "@ui/*": ["/ui/*"],
     },
-    "typeRoots": ["node_modules/@types", "./src/types"],
-        "target": "ES2020",
+    "typeRoots": ["node_modules/@types", "/types"],
+    "target": "ES2020",
     "module": "commonjs",
-    "outDir": "dist",
-    "rootDir": "src",
     "strict": true,
     "esModuleInterop": true
-  },
-  "include": ["src/**/*"]
+  }
 }

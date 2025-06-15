@@ -149,7 +149,7 @@ export default function Config() {
                     <OptionSelect
                       key={part} // e.g. strap, casing, face, housing
                       label={part} // e.g. strap, casing, face, housing
-                      defaultValue={defaultModelRef.current[part]} // e.g. 'cotton', 'button', 'standard', 'rubber'
+                      defaultValue={defaultModelRef.current![part]} // e.g. 'cotton', 'button', 'standard', 'rubber'
                       currentValue={currentSelection[part]}
                       choices={choices} // e.g. for strap, ['cotton', 'rubber']; for housing, ['button', 'standard']
                       setCurrentSelection={setCurrentSelection}

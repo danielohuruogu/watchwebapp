@@ -15,7 +15,6 @@ const downloadScreenshot = (renderer: Three.WebGLRenderer, scene: Three.Scene, c
   captureCanvas.width = renderer.domElement.width
   captureCanvas.height = renderer.domElement.height
   const context = captureCanvas.getContext("2d")
-
   // Draw the WebGL canvas to our capture canvas
   context?.drawImage(renderer.domElement, 0, 0)
 
@@ -78,6 +77,11 @@ const toggleVisibility = (scene: Three.Scene, currentSelectionContainer: models)
   }
   Object.entries(currentSelectionContainer).forEach(([partType, option]) => { // example would be strap, cotton
     const optionName = Object.keys(option)[0]
+    const selectedPartType = currentSelectionContainer[partType]
+    if (!selectedPartType) {
+      console.error(`No model part found for ${selectedPartType}`)
+      return false
+    }
     const selectedModelPart = currentSelectionContainer[partType][optionName]
     if (!selectedModelPart) {
       console.error(`No model part found for ${selectedModelPart}`)

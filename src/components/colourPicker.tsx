@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from "react"
-import { HexColorPicker } from "react-colorful"
+import { useState, useRef, useEffect } from 'react'
+import { HexColorPicker } from 'react-colorful'
 
 export default function ColourPicker({ groupName, objectColour, setObjectColour }: ColourPickerProps) {
   const [currentColour, setCurrentColour] = useState<string>(objectColour)
