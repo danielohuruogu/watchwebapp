@@ -11,7 +11,7 @@ export const AppContext = createContext<{
   displayLightsRef: React.RefObject<Three.Group | null>
   rendererRef: React.RefObject<Three.WebGLRenderer | null>
   modelOptionsRef: React.RefObject<models>
-  defaultModelRef: React.RefObject<defaultConfigDigital | defaultConfigAnalogue | null>
+  defaultModelRef: React.RefObject<defaultConfigDigital | defaultConfigAnalogue>
   displayedSelectionRef: React.RefObject<models>
   modelSizeRef: React.RefObject<number| null>
   orbitControlsRef: React.RefObject<OrbitControls | null>
@@ -42,7 +42,26 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const modelOptionsRef = useRef<models>({})
   const displayedSelectionRef = useRef<models>({})
   const modelSizeRef = useRef<number | null>(null)
-  const defaultModelRef = useRef<defaultConfigDigital | defaultConfigAnalogue>(null)
+
+  // to begin with I want to select the model options that correspond to one of the default configs outlined
+  const digitalConfig: defaultConfigDigital = {
+    housing: 'button',
+    casing: 'button',
+    strap: 'cotton',
+    face: 'digital'
+  }
+
+  const analogueConfig: defaultConfigAnalogue = {
+    housing: 'standard',
+    casing: 'standard',
+    strap: 'rubber',
+    face: Math.random() > 0.5 ? 'analogue1' : 'analogue2'
+  }
+
+  // setting a default to begin with
+  const defaultModelRef = useRef<defaultConfigDigital | defaultConfigAnalogue>(
+    Math.random() > 0.5 ? digitalConfig : analogueConfig
+  )
 
   // states for loading states
   const [loadedFiles, setLoadedFiles] = useState<boolean>(false)
@@ -78,29 +97,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const loadModelsIntoScene = useCallback(() => {
     if (!refsInitialised) {
-      console.error('Refs are not yet initialised')
+      console.warn('Refs are not yet initialised')
       return
-    }
-    // to begin with I want to select the model options that correspond to one of the default configs outlined
-    const digitalConfig: defaultConfigDigital = {
-      housing: 'button',
-      casing: 'button',
-      strap: 'cotton',
-      face: 'digital'
-    }
-
-    const analogueConfig: defaultConfigAnalogue = {
-      housing: 'standard',
-      casing: 'standard',
-      strap: 'rubber',
-      face: Math.random() > 0.5 ? 'analogue1' : 'analogue2'
-    }
-    
-    // setting a default to begin with
-    if (Math.random() > 0.5) {
-      defaultModelRef.current = digitalConfig
-    } else {
-      defaultModelRef.current = analogueConfig
     }
 
     // go through the current and add them to the scene
