@@ -32,7 +32,7 @@ const handler = async(req: VercelRequest, res: VercelResponse) => {
   const url = s3.getSignedUrl('getObject', {
     Bucket: process.env.S3_BUCKET!,
     Key: key,
-    Expires: 10
+    Expires: 20
   })
 
   res.status(200).json({ url })
