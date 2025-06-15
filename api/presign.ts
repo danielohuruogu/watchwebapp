@@ -9,7 +9,20 @@ const s3 = new AWS.S3({
   }
 })
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+const handler = async(req: VercelRequest, res: VercelResponse) => {
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS')
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+
+  if (req.method === 'OPTIONS') {
+    res.status(200).end()
+    return
+  }
+
+  if (req.method !== 'GET') {
+    return res.status(405).json({ error: 'Method not allowed' })
+  }
+
   const { key } = req.query
 
   if (typeof key !== 'string') {
@@ -19,8 +32,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const url = s3.getSignedUrl('getObject', {
     Bucket: process.env.S3_BUCKET!,
     Key: key,
-    Expires: 60
+    Expires: 10
   })
 
   res.status(200).json({ url })
 }
+
+export default handler

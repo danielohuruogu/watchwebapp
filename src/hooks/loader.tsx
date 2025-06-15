@@ -15,15 +15,15 @@ export function useLoader() {
       loader.setLibraryPath('https://unpkg.com/rhino3dm@8.4.0/')
 
       const s3Keys = [
-        '/assets/housing_button.3dm',
-        '/assets/housing_standard.3dm',
-        '/assets/casing_button.3dm',
-        '/assets/casing_standard.3dm',
-        '/assets/face_analogue1.3dm',
-        '/assets/face_digital.3dm',
-        '/assets/face_analogue2.3dm',
-        '/assets/strap_cotton.3dm',
-        '/assets/strap_rubber.3dm',
+        'assets/housing_button.3dm',
+        'assets/housing_standard.3dm',
+        'assets/casing_button.3dm',
+        'assets/casing_standard.3dm',
+        'assets/face_analogue1.3dm',
+        'assets/face_digital.3dm',
+        'assets/face_analogue2.3dm',
+        'assets/strap_cotton.3dm',
+        'assets/strap_rubber.3dm',
       ]
 
       const modelsRefHolder: models = modelOptionsRef.current || {}
