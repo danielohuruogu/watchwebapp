@@ -9,6 +9,7 @@ A model was split into its composite parts (which can be a bit of a philosophica
 ### "Database" structure for accessing model options in the app
 With this pattern, the main object within the code for housing the options is as follows
 
+```
 ModelsObject as modelOptions: {
   partOptions: {
     partGroups: {
@@ -16,9 +17,11 @@ ModelsObject as modelOptions: {
     }
   }
 }
+```
 
 Example, for a configuration to display a Digital watch:
 
+```
 ModelsObject: {
   face: {
     digital: {
@@ -65,6 +68,7 @@ ModelsObject: {
     }
   }
 }
+```
 
 ### Additional logic
 Depending on what you're designing and choosing from, certain combos of options don't make sense. In this case, it doesn't make sense to be able to choose the Digital Face option while selecting the casing for a Standard watch, as the Digital face physically doesn't fit. A ValidOptions check goes on to restrict the options available based on a particular logic. At present the ValidOptions for the type of G Shock modelled are hardcoded in. This logic can be abstracted should more varieties of model are added at a later date
