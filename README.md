@@ -1,7 +1,7 @@
 # Model designer app
 This app is a way for users to configure colour schemes and designs for 3D models. This idea was borne out of a desire to design watches, but with some changes and refactoring, the logic can be used to modify colour schemes for anything.
 
-Made out of React + Vite, with making use of Vercel for an API function for grabbing the 3D assets
+Made out of React + Vite, with making use of Vercel for an API function for grabbing the 3D assets. Currently only designed for desktop - mobile and tablet layout coming soon
 
 ## How it works
 A model was split into its composite parts (which can be a bit of a philosophical question) to generate the "options" for choosing, to be able to choose between alternate options. In the 3D models, each part visible part is given a name so that it can have its colour changed. The watch files follow this pattern; future models will have to follow the same pattern.
