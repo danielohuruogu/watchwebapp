@@ -12,6 +12,7 @@
     "isolatedModules": true,
     "moduleDetection": "force",
     "jsx": "react-jsx",
+    "noEmit": true,
 
     /* Linting */
     "strict": true,
