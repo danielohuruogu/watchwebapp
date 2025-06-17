@@ -3,49 +3,59 @@ import { Rhino3dmLoader } from 'three/examples/jsm/loaders/3DMLoader.js'
 import { useThree } from './three'
 import { useCallback } from 'react'
 
+const vercelEnv = import.meta.env.VITE_VERCEL_ENV
+
 export function useLoader() {
 
   const { sceneRef, cameraRef, orbitControlsRef, modelOptionsRef } = useThree()
 
-  const loadFile = useCallback(async () => {
-    return new Promise<void>((resolve, reject) => {
+  const loadFile = useCallback((): CancellablePromise<void> => {
+    let cancelled = false
+
+    const promise = new Promise<void>((resolve, reject) => {
       if (!sceneRef.current || !cameraRef.current || !orbitControlsRef.current) return
 
       const loader = new Rhino3dmLoader()
       loader.setLibraryPath('https://unpkg.com/rhino3dm@8.4.0/')
 
-      const s3Keys = [
-        'assets/housing_button.3dm',
-        'assets/housing_standard.3dm',
-        'assets/casing_button.3dm',
-        'assets/casing_standard.3dm',
-        'assets/face_analogue1.3dm',
-        'assets/face_digital.3dm',
-        'assets/face_analogue2.3dm',
-        'assets/strap_cotton.3dm',
-        'assets/strap_rubber.3dm',
+      const paths = [
+        '/assets/housing_button.3dm',
+        '/assets/housing_standard.3dm',
+        '/assets/casing_button.3dm',
+        '/assets/casing_standard.3dm',
+        '/assets/face_analogue1.3dm',
+        '/assets/face_digital.3dm',
+        '/assets/face_analogue2.3dm',
+        '/assets/strap_cotton.3dm',
+        '/assets/strap_rubber.3dm',
       ]
 
       const modelsRefHolder: models = modelOptionsRef.current || {}
 
       let loadedCount = 0
 
-      const loadFromS3 = async () => {
-        for (const key of s3Keys) {
+      const loadModels = async () => {
+        for (const path of paths) {
           // strip the path to get the name of the model as two words
           let objectPath: string
-          try {
-            const res = await fetch(`/api/presign?key=${encodeURIComponent(key)}`)
-            const { url } = await res.json()
-            objectPath = url
 
-            const modelName = key.split('/').pop()?.split('.')[0]
+          try {
+            if (vercelEnv !== 'development') {
+              const res = await fetch(`/api/presign?key=${encodeURIComponent(path)}`)
+              const { url } = await res.json()
+              objectPath = url
+            } else {
+              objectPath = path
+            }
+
+            const modelName = path.split('/').pop()?.split('.')[0]
             const modelNameParts = modelName?.split('_')
             const part = modelNameParts![0]
             const option = modelNameParts![1]
             loader.load(
               objectPath,
               (object: Three.Object3D) => {
+                if (cancelled) return
                 object.traverse((child) => {
                   const modelBitGroupName = child.name
                   // if the child has no name, don't bother
@@ -75,7 +85,7 @@ export function useLoader() {
                 })
 
                 loadedCount++
-                if (loadedCount === s3Keys.length) {
+                if (loadedCount === paths.length) {
                   console.log('All models loaded')
                   modelOptionsRef.current = modelsRefHolder
                   resolve()
@@ -83,18 +93,24 @@ export function useLoader() {
               },
               (undefined),
               (error: unknown) => {
-                console.error('An error happened: ', key, error)
+                if (cancelled) return
                 reject(error)
               }
             )
           } catch (err) {
-            console.error('An error happened: ', key, err)
+            if (cancelled) return
             reject(err)
           }
         }
       }
-      loadFromS3().catch(reject)
-    })
+      loadModels().catch(err => {
+        if (!cancelled) reject(err)
+      })
+    }) as CancellablePromise<void>
+
+    promise.cancel = () => { cancelled = true }
+
+    return promise
   }, [cameraRef, sceneRef, modelOptionsRef, orbitControlsRef])
 
 return { loadFile, cameraRef, orbitControlsRef, sceneRef, modelOptionsRef }

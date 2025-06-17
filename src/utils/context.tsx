@@ -18,7 +18,7 @@ export const AppContext = createContext<{
   refsInitialised: boolean
   loadedFiles: boolean
   setLoadedFiles: React.Dispatch<React.SetStateAction<boolean>>
-  loadModelsIntoScene: () => void
+  setInitialModels: () => void
   autoRotate: boolean
   setAutoRotate: React.Dispatch<React.SetStateAction<boolean>>
   displayLights: boolean
@@ -95,7 +95,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       defaultModelRef
     ])
 
-  const loadModelsIntoScene = useCallback(() => {
+  const setInitialModels = useCallback(() => {
     if (!refsInitialised) {
       console.warn('Refs are not yet initialised')
       return
@@ -103,12 +103,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     // go through the current and add them to the scene
     Object.entries(defaultModelRef.current).forEach(([partType, option]) => { // example would be strap, cotton
-      const partTypeInModelRef = modelOptionsRef.current![partType]
+      const partTypeInModelRef = modelOptionsRef.current?.[partType]
       if (!partTypeInModelRef) {
         console.warn(`No model options found for ${partType} in modelOptionsRef.current`)
         return
       }
-      const selectedModelPart = modelOptionsRef.current![partType][option]
+      const selectedModelPart = modelOptionsRef.current?.[partType]?.[option]
       if (!selectedModelPart) return
 
       // add the current selection to the displayedSelectionRef, for later use
@@ -119,7 +119,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           [option]: selectedModelPart
         }
       }
-    })    
+    })
   }, [refsInitialised, modelOptionsRef, sceneRef, defaultModelRef, displayedSelectionRef])
 
   return (
@@ -139,7 +139,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       refsInitialised,
       loadedFiles,
       setLoadedFiles,
-      loadModelsIntoScene,
+      setInitialModels,
       autoRotate,
       setAutoRotate,
       displayLights,

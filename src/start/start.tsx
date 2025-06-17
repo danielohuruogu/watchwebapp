@@ -19,7 +19,7 @@ function Start () {
     displayLightsRef,
     loadedFiles,
     setLoadedFiles,
-    loadModelsIntoScene,
+    setInitialModels,
     refsInitialised,
     orbitControlsRef,
     autoRotate,
@@ -69,19 +69,23 @@ function Start () {
   useEffect(() => {
     if (loadedFiles) return
     // files ain't loaded yet - load them
-    loadFile()
-      .then(() => {
+    const promise = loadFile()
+    promise.then(() => {
         console.log('files loaded')
         setLoadedFiles(true)
       })
+
+    return () => {
+      if (promise.cancel) promise.cancel()
+    }
   }, [loadedFiles, loadFile, setLoadedFiles])
 
   useEffect(() => {
     if (!loadedFiles || !refsInitialised) return
 
     console.log('files now loaded + refs initialised - adding models to scene')
-    loadModelsIntoScene()
-  }, [loadedFiles, refsInitialised, loadModelsIntoScene])
+    setInitialModels()
+  }, [loadedFiles, refsInitialised, setInitialModels])
 
   return (
     <div className='start-container'>

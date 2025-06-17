@@ -65,6 +65,9 @@ declare global {
     disabled?: boolean,
     styles? : React.CSSProperties
   }
+
+  // cancellable promise type
+  export type CancellablePromise<T> = Promise<T> & { cancel: () => void }
 }
 
 export {}

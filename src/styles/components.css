@@ -260,13 +260,29 @@
     height: 18px;
     border: 1px solid #ccc;
     cursor: pointer;
-    border-radius: 4px;
+    border-radius: 4px 4px 0 0;
 }
 
 .popover {
     position: absolute;
     top: 30px;
-    left: 0;
+    right: 0;
     z-index: 10;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    /* box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); */
+}
+
+.colour-input {
+    display: block;
+    box-sizing: border-box;
+    /* width: 90px; */
+    /* margin: 0 55px; */
+    padding: 6px;
+    border: 1px solid #ddd;
+    border-radius: 0 0 4px 4px;
+    background: #ffffff;
+    outline: none;
+    font: inherit;
+    color: black;
+    text-transform: uppercase;
+    text-align: center;
 }

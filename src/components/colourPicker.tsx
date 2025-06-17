@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { HexColorPicker } from 'react-colorful'
+import { HexColorPicker, HexColorInput } from 'react-colorful'
 
 export default function ColourPicker({ groupName, objectColour, setObjectColour }: ColourPickerProps) {
   const [currentColour, setCurrentColour] = useState<string>(objectColour)
@@ -37,6 +37,7 @@ export default function ColourPicker({ groupName, objectColour, setObjectColour 
       {isOpen && (
         <div className="popover">
           <HexColorPicker color={currentColour} onChange={updateColour} />
+          <HexColorInput color={currentColour} onChange={updateColour} className='colour-input'/>
         </div>
       )}
     </div>

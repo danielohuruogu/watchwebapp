@@ -23,12 +23,16 @@ const handler = async(req: VercelRequest, res: VercelResponse) => {
     return res.status(405).json({ error: 'Method not allowed' })
   }
 
-  const { key } = req.query
+  let { key } = req.query
 
   if (typeof key !== 'string') {
     return res.status(400).json({ error: 'Missing or invalid key' })
   }
 
+  // strip the first slash if there is one
+  if (key.startsWith('/')) {
+    key = key.slice(1)
+  }
   const url = s3.getSignedUrl('getObject', {
     Bucket: process.env.S3_BUCKET!,
     Key: key,
