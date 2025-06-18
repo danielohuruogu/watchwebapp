@@ -1,4 +1,5 @@
 import * as Three from 'three'
+import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js'
 
 const aspectRatio = 1.558
 
@@ -20,6 +21,16 @@ materials['bulbLight'] = new Three.MeshStandardMaterial({
   emissiveIntensity: 1,
   roughness: 0.5,
   metalness: 0.5,
+})
+materials['glass'] = new Three.MeshPhysicalMaterial({
+  transmission: 1,
+  roughness: 0,
+  clearcoat: 1,
+  metalness: 0,
+  thickness: 0.001,
+  ior: 1.5,
+  opacity: 1,
+  specularIntensity: 1
 })
 materials['skyDomeGradient'] = new Three.ShaderMaterial({
   side: Three.BackSide,
@@ -119,7 +130,7 @@ const lights: {
 }} = {
   ambientLight: {
     display: {
-      intensity: 0.05,
+      intensity: 0.2,
     },
     standard: {
       intensity: 1.5,

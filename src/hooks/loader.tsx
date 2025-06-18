@@ -2,6 +2,7 @@ import * as Three from 'three'
 import { Rhino3dmLoader } from 'three/examples/jsm/loaders/3DMLoader.js'
 import { useThree } from './three'
 import { useCallback } from 'react'
+import { materials } from '../utils/constants'
 
 const vercelEnv = import.meta.env.VITE_VERCEL_ENV
 
@@ -76,8 +77,13 @@ export function useLoader() {
                   }
                   child.scale.set(0.1, 0.1, 0.1)
                   child.rotateX(-Math.PI / 2)
+                  
                   // clone the child material to avoid issues with shared materials
                   if ((child instanceof Three.Mesh || child instanceof Three.Line || child instanceof Three.LineSegments) && child.material) {
+                    // set child's material to glass if it is a glass object
+                    if (modelBitGroupName === 'screen') {
+                      child.material = materials['glass']
+                    }
                     child.material = child.material.clone()
                     child.material.isShared = false
                   }
